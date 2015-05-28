@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Recording", "Recording", "{A06CAECD-EAA6-4663-944C-10EA0CAB8767}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Recorder", "Recorder", "{A06CAECD-EAA6-4663-944C-10EA0CAB8767}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InGameFinder", "InGameFinder", "{05D1C086-84DF-45E2-982C-E123418F559F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SummonerInGameFinder", "SummonerInGameFinder", "{05D1C086-84DF-45E2-982C-E123418F559F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{88A7388A-FF73-490B-BFF7-6672E36308D9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RiotApi", "RiotApi", "{A511223B-2961-4A5E-881F-2C09034BD4C4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RecordingFinisher", "RecordingFinisher", "{A511223B-2961-4A5E-881F-2C09034BD4C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{68044D85-89B5-4A26-B90C-155F16E8774A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueRecorder.Shared.Abstractions", "Shared\LeagueRecorder.Shared.Abstractions\LeagueRecorder.Shared.Abstractions.csproj", "{88B68E82-956C-4E6F-B21B-953FDAA28F80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RiotApi", "RiotApi", "{B3078FD0-ED6F-4DD8-AB24-02C8FD8FDD29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
