@@ -11,16 +11,15 @@ BACKEND:
 
 - Recorder
     - Fragt die Queue ab um herauszufinden welche Spiele aufgenommen werden sollen (RecordGame Message)
-    - Fragt die Queue ab um herauszufinden welche Spiele weiter aufgenommen werden (ResumeRecording Message)
     - Er erstellt einen Background-Prozess für dieses Game wo er die Riot Api alle 30 Sekunden abfragt
-        - Lädt aktuelle Chunks und KeyFrames runter und speichert diese unter "Recording"
+        - Lädt aktuelle Chunks und KeyFrames runter und speichert diese unter "RecordData"
         - Zählt einen "ErrorCount" im TableStorage zu dem Game hoch wenn es einen Fehler gab
         - Erreicht dieser "ErrorCount" 10 oder so wird das Recording von dem Spiel abgebrochen
         - Prüft ob das Spiel beendet wurde und alle Daten vorhanden sind. Speichert das im TableStorage
     - Wenn der Recorder beendet werden soll
         - Stoppt er die Annahme von der Queue
         - Beendet die Background-Prozesse
-        - Schickt neue "ResumeRecording" Messages in die Queue
+        - Schickt neue "RecordGame" Messages in die Queue
 
 - RecordingFinisher
     - Prüft im TableStorage ob es Spiele gibt die beendet wurden
