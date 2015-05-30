@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using LeagueRecorder.Shared.Abstractions.Results;
 
 namespace LeagueRecorder.Shared.Abstractions.Recordings
 {
     public interface IRecordingStorage
     {
-        Task<Result> SaveRecordingAsync(Recording recording);
-        Task<Result> SaveChunkAsync(long gameId, Region region, int chunkId, Stream chunk);
-        Task<Result> SaveKeyFrameAsync(long gameId, Region region, int keyFrameId, Stream keyFrame);
+        Task<Result> IsGameRecording(long gameId, [NotNull]Region region);
 
-        Task<Result<Recording>> GetRecordingAsync(long gameId, Region region);
-        Task<Result<Stream>> GetChunkAsync(long gameId, Region region, int chunkId);
-        Task<Result<Stream>> GetKeyFrameAsync(long gameId, Region region, int keyFrameId);
+        Task<Result> SaveRecordingAsync([NotNull]Recording recording);
+        Task<Result<Recording>> GetRecordingAsync(long gameId, [NotNull]Region region);
 
         Task<Result<IList<Recording>>> GetFinishedRecordingsAsync();
     }

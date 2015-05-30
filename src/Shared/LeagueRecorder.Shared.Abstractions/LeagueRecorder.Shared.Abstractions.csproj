@@ -50,6 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="GameData\IGameDataStorage.cs" />
+    <Compile Include="IConfig.cs" />
+    <Compile Include="IWorker.cs" />
     <Compile Include="Recordings\IRecordingStorage.cs" />
     <Compile Include="Recordings\Recording.cs" />
     <Compile Include="Records\GameInformation.cs" />
@@ -58,6 +62,7 @@
     <Compile Include="Records\ReplayInformation.cs" />
     <Compile Include="Region.cs" />
     <Compile Include="Results\Result.cs" />
+    <Compile Include="Results\ResultException.cs" />
     <Compile Include="Results\ResultState.cs" />
     <Compile Include="Results\Result[T].cs" />
     <Compile Include="Summoners\ISummonerStorage.cs" />

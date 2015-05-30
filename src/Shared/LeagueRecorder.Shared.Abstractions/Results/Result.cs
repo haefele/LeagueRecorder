@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LeagueRecorder.Shared.Abstractions.Recordings;
 using LiteGuard;
 
 namespace LeagueRecorder.Shared.Abstractions.Results
