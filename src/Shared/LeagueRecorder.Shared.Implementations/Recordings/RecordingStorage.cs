@@ -10,6 +10,7 @@ using LeagueRecorder.Shared.Abstractions.Results;
 using LeagueRecorder.Shared.Localization;
 using LiteGuard;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using Microsoft.WindowsAzure.Storage.Table.Queryable;
 

@@ -4,6 +4,7 @@
     {
         string GameDataContainerName { get; }
         string RecordingTableName { get; }
+        string RecordingQueueName { get; }
         int CountOfSummonersToCheckIfIngameAtOnce { get; }
     }
 }

@@ -53,9 +53,10 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="GameData\IGameDataStorage.cs" />
     <Compile Include="IConfig.cs" />
-    <Compile Include="IWorker.cs" />
+    <Compile Include="Recordings\IRecordingQueue.cs" />
     <Compile Include="Recordings\IRecordingStorage.cs" />
     <Compile Include="Recordings\Recording.cs" />
+    <Compile Include="Recordings\RecordingRequest.cs" />
     <Compile Include="Records\GameInformation.cs" />
     <Compile Include="Records\IRecordStorage.cs" />
     <Compile Include="Records\Record.cs" />
