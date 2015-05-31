@@ -6,5 +6,6 @@
         string RecordingTableName { get; }
         string RecordingQueueName { get; }
         int CountOfSummonersToCheckIfIngameAtOnce { get; }
+        string RiotApiKey { get; }
     }
 }

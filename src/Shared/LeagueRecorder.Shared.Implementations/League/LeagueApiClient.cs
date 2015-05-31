@@ -18,19 +18,19 @@ namespace LeagueRecorder.Shared.Implementations.League
     public class LeagueApiClient : ILeagueApiClient
     {
         #region Fields
-        private readonly string _apiKey;
+        private readonly IConfig _config;
         #endregion
 
         #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="LeagueApiClient"/> class.
         /// </summary>
-        /// <param name="apiKey">The API key.</param>
-        public LeagueApiClient(string apiKey)
+        /// <param name="config">The config.</param>
+        public LeagueApiClient([NotNull]IConfig config)
         {
-            Guard.AgainstNullArgument("apiKey", apiKey);
+            Guard.AgainstNullArgument("config", config);
 
-            this._apiKey = apiKey;
+            this._config = config;
         }
         #endregion
 
@@ -174,7 +174,7 @@ namespace LeagueRecorder.Shared.Implementations.League
         #region Private Methods
         private HttpClient GetClient([CanBeNull]Region region = null)
         {
-            var client = HttpClientFactory.Create(new ApiKeyMessageHandler(this._apiKey));
+            var client = HttpClientFactory.Create(new ApiKeyMessageHandler(this._config.RiotApiKey));
             client.BaseAddress = new Uri(string.Format("{0}://{1}.api.pvp.net/", Uri.UriSchemeHttps, region != null ? region.RiotApiPlatformId : "global"));
 
             return client;
