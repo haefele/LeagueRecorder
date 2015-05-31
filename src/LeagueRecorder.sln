@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueRecorder.Worker.Recor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueRecorder.Worker.RiotApi", "Worker\LeagueRecorder.Worker.RiotApi\LeagueRecorder.Worker.RiotApi.csproj", "{A334EE7D-783E-46A5-92C6-3A4B8F90E319}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{AA1A01BB-0E42-40B7-9BD3-A08E0A15E5E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueRecorder.Tests.Console", "Tests\LeagueRecorder.Tests.Console\LeagueRecorder.Tests.Console.csproj", "{07712EDE-CF73-4037-942B-828C755F1B24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,10 @@ Global
 		{A334EE7D-783E-46A5-92C6-3A4B8F90E319}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A334EE7D-783E-46A5-92C6-3A4B8F90E319}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A334EE7D-783E-46A5-92C6-3A4B8F90E319}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07712EDE-CF73-4037-942B-828C755F1B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07712EDE-CF73-4037-942B-828C755F1B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07712EDE-CF73-4037-942B-828C755F1B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07712EDE-CF73-4037-942B-828C755F1B24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,5 +82,6 @@ Global
 		{391C019F-EA90-42E9-9FA1-B6B145F8E60D} = {2BB47204-076E-49A0-B3A8-D9861714BCA8}
 		{F8AA640D-7AB1-4ADE-818E-0DB201615B57} = {2BB47204-076E-49A0-B3A8-D9861714BCA8}
 		{A334EE7D-783E-46A5-92C6-3A4B8F90E319} = {2BB47204-076E-49A0-B3A8-D9861714BCA8}
+		{07712EDE-CF73-4037-942B-828C755F1B24} = {AA1A01BB-0E42-40B7-9BD3-A08E0A15E5E5}
 	EndGlobalSection
 EndGlobal

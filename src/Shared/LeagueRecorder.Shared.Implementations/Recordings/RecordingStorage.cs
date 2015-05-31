@@ -55,7 +55,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             {
                 Result isRecordingResult = await this.IsGameRecording(recording.GameId, recording.Region);
 
-                if (isRecordingResult.IsError)
+                if (isRecordingResult.IsSuccess)
                     throw new ResultException(isRecordingResult.Message);
 
                 CloudTable recordingTable = await this.GetRecordingTableAsync();

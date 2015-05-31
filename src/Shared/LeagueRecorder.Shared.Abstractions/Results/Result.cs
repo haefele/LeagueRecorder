@@ -155,6 +155,13 @@ namespace LeagueRecorder.Shared.Abstractions.Results
             {
                 return Result.AsSuccess(action());
             }
+            catch (ResultException resultException)
+            {
+                var result = Result.FromException(resultException);
+                result.AdditionalData = resultException.AdditionalData;
+
+                return result;
+            }
             catch (Exception exception)
             {
                 return Result.FromException(exception);
@@ -173,6 +180,13 @@ namespace LeagueRecorder.Shared.Abstractions.Results
             try
             {
                 return Result.AsSuccess(await action().ConfigureAwait(false));
+            }
+            catch (ResultException resultException)
+            {
+                var result = Result.FromException(resultException);
+                result.AdditionalData = resultException.AdditionalData;
+
+                return result;
             }
             catch (Exception exception)
             {
@@ -193,6 +207,13 @@ namespace LeagueRecorder.Shared.Abstractions.Results
                 action();
                 return Result.AsSuccess();
             }
+            catch (ResultException resultException)
+            {
+                var result = Result.FromException(resultException);
+                result.AdditionalData = resultException.AdditionalData;
+
+                return result;
+            }
             catch (Exception exception)
             {
                 return Result.FromException(exception);
@@ -211,6 +232,13 @@ namespace LeagueRecorder.Shared.Abstractions.Results
             {
                 await action().ConfigureAwait(false);
                 return Result.AsSuccess();
+            }
+            catch (ResultException resultException)
+            {
+                var result = Result.FromException(resultException);
+                result.AdditionalData = resultException.AdditionalData;
+
+                return result;
             }
             catch (Exception exception)
             {

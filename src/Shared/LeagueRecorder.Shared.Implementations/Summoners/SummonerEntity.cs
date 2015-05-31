@@ -34,7 +34,7 @@ namespace LeagueRecorder.Shared.Implementations.Summoners
             };
         }
 
-        public Summoner AsSummoner()
+        public virtual Summoner AsSummoner()
         {
             return new Summoner
             {

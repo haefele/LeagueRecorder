@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.Recordings;
 using LeagueRecorder.Shared.Abstractions.Results;
+using LeagueRecorder.Shared.Implementations.Extensions;
 using LiteGuard;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
@@ -40,10 +41,13 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             {
                 var queue = await this.GetQueueAsync();
 
-                var message = new CloudQueueMessage(string.Empty);
+                var settings = this.GetJsonSerializerSettings();
+
+                var message = new CloudQueueMessage(JsonConvert.SerializeObject(recording, this.GetJsonSerializerSettings()));
                 await queue.AddMessageAsync(message);
             });
         }
+
         public Task<Result<RecordingRequest>> DequeueAsync()
         {
             return Result.CreateAsync(async () =>
@@ -51,7 +55,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 var queue = await this.GetQueueAsync();
 
                 var message = await queue.GetMessageAsync();
-                var actualData = JsonConvert.DeserializeObject<RecordingRequest>(message.AsString);
+                var actualData = JsonConvert.DeserializeObject<RecordingRequest>(message.AsString, this.GetJsonSerializerSettings());
 
                 this._requestToQueueMessageMapping.TryAdd(actualData, message);
 
@@ -80,6 +84,14 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             await queue.CreateIfNotExistsAsync();
 
             return queue;
+        }
+
+        private JsonSerializerSettings GetJsonSerializerSettings()
+        {
+            return new JsonSerializerSettings
+            {
+                Converters = new JsonConverter[] { new RegionJsonConverter() }
+            };
         }
         #endregion
     }

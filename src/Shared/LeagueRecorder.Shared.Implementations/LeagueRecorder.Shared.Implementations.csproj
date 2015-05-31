@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\PropertyPartExtensions.cs" />
+    <Compile Include="Extensions\RegionJsonConverter.cs" />
     <Compile Include="GameData\GameDataStorage.cs" />
     <Compile Include="League\ApiKeyMessageHandler.cs" />
     <Compile Include="League\LeagueApiClient.cs" />

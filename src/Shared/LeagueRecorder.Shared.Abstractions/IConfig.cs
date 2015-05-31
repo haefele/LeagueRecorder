@@ -7,5 +7,7 @@
         string RecordingQueueName { get; }
         int CountOfSummonersToCheckIfIngameAtOnce { get; }
         string RiotApiKey { get; }
+        int IntervalToCheckIfOneSummonerIsIngame { get; }
+        int IntervalToCheckIfSummonersAreIngame { get; }
     }
 }

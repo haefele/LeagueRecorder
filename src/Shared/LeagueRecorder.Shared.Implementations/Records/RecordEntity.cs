@@ -6,39 +6,39 @@ namespace LeagueRecorder.Shared.Implementations.Records
 {
     public class RecordEntity
     {
-        public string Id { get; set; }
+        public virtual string Id { get; set; }
 
-        public long GameId { get; set; }
-        public string Region { get; set; }
+        public virtual long GameId { get; set; }
+        public virtual string Region { get; set; }
 
-        public string LeagueVersion { get; set; }
-        public string SpectatorVersion { get; set; }
-        
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public int InterestScore { get; set; }
-        public TimeSpan GameLength { get; set; }
+        public virtual string LeagueVersion { get; set; }
+        public virtual string SpectatorVersion { get; set; }
 
-        public string EncryptionKey { get; set; }
+        public virtual DateTime StartTime { get; set; }
+        public virtual DateTime EndTime { get; set; }
+        public virtual int InterestScore { get; set; }
+        public virtual TimeSpan GameLength { get; set; }
 
-        public DateTime CreateTime { get; set; }
+        public virtual string EncryptionKey { get; set; }
 
-        public int EndStartupChunkId { get; set; }
-        public int StartGameChunkId { get; set; }
-        public int EndGameChunkId { get; set; }
-        public int EndGameKeyFrameId { get; set; }
+        public virtual DateTime CreateTime { get; set; }
 
-        public TimeSpan ChunkTimeInterval { get; set; }
-        public TimeSpan KeyFrameTimeInterval { get; set; }
-        public TimeSpan ClientAddedLag { get; set; }
-        public TimeSpan DelayTime { get; set; }
+        public virtual int EndStartupChunkId { get; set; }
+        public virtual int StartGameChunkId { get; set; }
+        public virtual int EndGameChunkId { get; set; }
+        public virtual int EndGameKeyFrameId { get; set; }
+
+        public virtual TimeSpan ChunkTimeInterval { get; set; }
+        public virtual TimeSpan KeyFrameTimeInterval { get; set; }
+        public virtual TimeSpan ClientAddedLag { get; set; }
+        public virtual TimeSpan DelayTime { get; set; }
 
         public static string ToId(long gameId, Region region)
         {
             return string.Format("{0}/{1}", region, gameId);
         }
 
-        public Record AsRecord()
+        public virtual Record AsRecord()
         {
             return new Record
             {
