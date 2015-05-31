@@ -53,6 +53,7 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="GameData\IGameDataStorage.cs" />
     <Compile Include="IConfig.cs" />
+    <Compile Include="IWorker.cs" />
     <Compile Include="League\ILeagueApiClient.cs" />
     <Compile Include="League\ILeagueSpectatorApiClient.cs" />
     <Compile Include="League\RiotChunk.cs" />
