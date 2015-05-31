@@ -13,11 +13,14 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
 {
     public class RecordingQueue : IRecordingQueue
     {
+        #region Fields
         private readonly CloudQueueClient _queueClient;
         private readonly IConfig _config;
 
-        private readonly ConcurrentDictionary<RecordingRequest, CloudQueueMessage> _requestToQueueMessageMapping; 
+        private readonly ConcurrentDictionary<RecordingRequest, CloudQueueMessage> _requestToQueueMessageMapping;
+        #endregion
 
+        #region Constructors
         public RecordingQueue([NotNull]CloudQueueClient queueClient, [NotNull]IConfig config)
         {
             Guard.AgainstNullArgument("queueClient", queueClient);
@@ -28,7 +31,9 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
 
             this._requestToQueueMessageMapping = new ConcurrentDictionary<RecordingRequest, CloudQueueMessage>();
         }
+        #endregion
 
+        #region Methods
         public Task<Result> EnqueueAsync(RecordingRequest recording)
         {
             return Result.CreateAsync(async () =>
@@ -39,7 +44,6 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 await queue.AddMessageAsync(message);
             });
         }
-
         public Task<Result<RecordingRequest>> DequeueAsync()
         {
             return Result.CreateAsync(async () =>
@@ -54,7 +58,6 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 return actualData;
             });
         }
-
         public Task<Result> RemoveAsync(RecordingRequest request)
         {
             return Result.CreateAsync(async () =>
@@ -68,8 +71,9 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 }
             });
         }
+        #endregion
 
-
+        #region Private Methods
         private async Task<CloudQueue> GetQueueAsync()
         {
             var queue = this._queueClient.GetQueueReference(this._config.RecordingQueueName);
@@ -77,5 +81,6 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
 
             return queue;
         }
+        #endregion
     }
 }

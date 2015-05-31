@@ -81,6 +81,15 @@ namespace LeagueRecorder.Shared.Localization {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string RateLimitExceeded {
+            get {
+                return ResourceManager.GetString("RateLimitExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string RecordDoesNotExist {
             get {
                 return ResourceManager.GetString("RecordDoesNotExist", resourceCulture);
@@ -102,6 +111,33 @@ namespace LeagueRecorder.Shared.Localization {
         public static string RecordingInsertFailed {
             get {
                 return ResourceManager.GetString("RecordingInsertFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SummonerNotFound {
+            get {
+                return ResourceManager.GetString("SummonerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SummonerNotInGame {
+            get {
+                return ResourceManager.GetString("SummonerNotInGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string UnexpectedError {
+            get {
+                return ResourceManager.GetString("UnexpectedError", resourceCulture);
             }
         }
     }
