@@ -61,7 +61,7 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The chunk does not exist..
         /// </summary>
         public static string ChunkDoesNotExist {
             get {
@@ -70,7 +70,25 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Error while deleting the chunk..
+        /// </summary>
+        public static string ErrorWhileDeletingChunk {
+            get {
+                return ResourceManager.GetString("ErrorWhileDeletingChunk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error while deleting the keyframe..
+        /// </summary>
+        public static string ErrorWhileDeletingKeyFrame {
+            get {
+                return ResourceManager.GetString("ErrorWhileDeletingKeyFrame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The keyframe does not exist..
         /// </summary>
         public static string KeyFrameDoesNotExist {
             get {
@@ -79,7 +97,16 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to There is currently no recording requested..
+        /// </summary>
+        public static string NoRecordingRequest {
+            get {
+                return ResourceManager.GetString("NoRecordingRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The rate limit was exceeded..
         /// </summary>
         public static string RateLimitExceeded {
             get {
@@ -88,7 +115,7 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The record does not exist..
         /// </summary>
         public static string RecordDoesNotExist {
             get {
@@ -97,7 +124,7 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The recording does not eixst..
         /// </summary>
         public static string RecordingDoesNotExist {
             get {
@@ -106,7 +133,7 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Failed to insert the recording..
         /// </summary>
         public static string RecordingInsertFailed {
             get {
@@ -115,7 +142,7 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The summoner was not found..
         /// </summary>
         public static string SummonerNotFound {
             get {
@@ -124,7 +151,7 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to The summoner is not ingame..
         /// </summary>
         public static string SummonerNotInGame {
             get {
@@ -133,7 +160,7 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Unexpected error..
         /// </summary>
         public static string UnexpectedError {
             get {

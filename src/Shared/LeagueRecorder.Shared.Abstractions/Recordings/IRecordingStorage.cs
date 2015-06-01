@@ -15,5 +15,6 @@ namespace LeagueRecorder.Shared.Abstractions.Recordings
         Task<Result<Recording>> GetRecordingAsync(long gameId, [NotNull]Region region);
 
         Task<Result<IList<Recording>>> GetFinishedRecordingsAsync();
+        Task<Result> DeleteRecordingAsync(long gameId, [NotNull]Region region);
     }
 }

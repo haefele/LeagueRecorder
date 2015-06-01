@@ -6,6 +6,7 @@ using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.Recordings;
 using LeagueRecorder.Shared.Abstractions.Results;
 using LeagueRecorder.Shared.Implementations.Extensions;
+using LeagueRecorder.Shared.Localization;
 using LiteGuard;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
@@ -55,8 +56,11 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 var queue = await this.GetQueueAsync();
 
                 var message = await queue.GetMessageAsync();
-                var actualData = JsonConvert.DeserializeObject<RecordingRequest>(message.AsString, this.GetJsonSerializerSettings());
 
+                if (message == null)
+                    throw new ResultException(Messages.NoRecordingRequest);
+
+                var actualData = JsonConvert.DeserializeObject<RecordingRequest>(message.AsString, this.GetJsonSerializerSettings());
                 this._requestToQueueMessageMapping.TryAdd(actualData, message);
 
                 return actualData;

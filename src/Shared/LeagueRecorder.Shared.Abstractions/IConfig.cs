@@ -9,5 +9,6 @@
         string RiotApiKey { get; }
         int IntervalToCheckIfOneSummonerIsIngame { get; }
         int IntervalToCheckIfSummonersAreIngame { get; }
+        int RecordingMaxErrorCount { get; }
     }
 }

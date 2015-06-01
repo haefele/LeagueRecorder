@@ -29,13 +29,6 @@ namespace LeagueRecorder.Shared.Abstractions.Results
             get { return this.State == ResultState.Success; }
         }
         /// <summary>
-        /// Gets a value indicating whether <see cref="State"/> is <see cref="ResultState.Warning"/>.
-        /// </summary>
-        public bool IsWarning
-        {
-            get { return this.State == ResultState.Warning; }
-        }
-        /// <summary>
         /// Gets a value indicating whether <see cref="State"/> is <see cref="ResultState.Error"/>.
         /// </summary>
         public bool IsError

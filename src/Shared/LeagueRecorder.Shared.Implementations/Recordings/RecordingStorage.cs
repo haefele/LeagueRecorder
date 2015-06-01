@@ -53,14 +53,9 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
         {
             return Result.CreateAsync(async () =>
             {
-                Result isRecordingResult = await this.IsGameRecording(recording.GameId, recording.Region);
-
-                if (isRecordingResult.IsSuccess)
-                    throw new ResultException(isRecordingResult.Message);
-
                 CloudTable recordingTable = await this.GetRecordingTableAsync();
 
-                TableOperation operation = TableOperation.Insert(RecordingTable.FromRecording(recording));
+                TableOperation operation = TableOperation.InsertOrReplace(RecordingTable.FromRecording(recording));
                 TableResult result = await recordingTable.ExecuteAsync(operation);
 
                 if (result.Etag == null)
@@ -111,6 +106,26 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 return result;
             });
         }
+
+        public Task<Result> DeleteRecordingAsync(long gameId, Region region)
+        {
+            return Result.CreateAsync(async () =>
+            {
+                CloudTable recordingTable = await this.GetRecordingTableAsync();
+
+                TableOperation getOperation = TableOperation.Retrieve<RecordingTable>(RecordingTable.ToPartitionKey(region), RecordingTable.ToRowKey(gameId));
+                TableResult result = await recordingTable.ExecuteAsync(getOperation);
+
+                if (result.Result == null)
+                    return;
+
+                var entity = (RecordingTable)result.Result;
+
+                TableOperation deleteOperation = TableOperation.Delete(entity);
+                TableResult deleteResult = await recordingTable.ExecuteAsync(deleteOperation);
+            });
+        }
+
         #endregion
 
         #region Private Methods

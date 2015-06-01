@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using LeagueRecorder.Shared.Abstractions;
+using LeagueRecorder.Shared.Implementations.GameData;
 using LeagueRecorder.Shared.Implementations.League;
 using LeagueRecorder.Shared.Implementations.Recordings;
 using LeagueRecorder.Shared.Implementations.Summoners;
 using LeagueRecorder.Worker.SummonerInGameFinder;
 using Microsoft.WindowsAzure.Storage;
 using NHibernate.Tool.hbm2ddl;
+using LeagueRecorder.Worker.Recorder;
 
 namespace LeagueRecorder.Tests.Console
 {
@@ -30,16 +32,24 @@ namespace LeagueRecorder.Tests.Console
             var config = new InMemoryConfig();
 
             var apiClient = new LeagueApiClient(config);
+            var spectatorApiClient = new LeagueSpectatorApiClient();
             var summonerStorage = new SummonerStorage(sessionFactory, config);
             var recordingQueue = new RecordingQueue(cloudStorageAccount.CreateCloudQueueClient(), config);
             var recordingStorage = new RecordingStorage(cloudStorageAccount.CreateCloudTableClient(), config);
+            var gameDataStorage = new GameDataStorage(cloudStorageAccount.CreateCloudBlobClient(), config);
 
             var finder = new SummonerInGameFinderWorker(apiClient, summonerStorage, recordingQueue, recordingStorage, config);
-
             finder.StartAsync().Wait();
 
+            var recorder = new RecorderWorker(recordingQueue, apiClient, spectatorApiClient, recordingStorage, gameDataStorage, config);
+            recorder.StartAsync().Wait();
+                        
             var tokenSource = new CancellationTokenSource();
-            finder.RunAsync(tokenSource.Token).Wait();
+            
+            finder.RunAsync(tokenSource.Token);
+            recorder.RunAsync(tokenSource.Token);
+
+            System.Console.ReadLine();
         }
     }
 
@@ -78,6 +88,11 @@ namespace LeagueRecorder.Tests.Console
         public int IntervalToCheckIfSummonersAreIngame
         {
             get { return 5; }
+        }
+        
+        public int RecordingMaxErrorCount
+        {
+            get { return 10; }
         }
     }
 }

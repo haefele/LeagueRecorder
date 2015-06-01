@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Anotar.NLog;
 using JetBrains.Annotations;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.GameData;
@@ -34,25 +35,29 @@ namespace LeagueRecorder.Shared.Implementations.GameData
         #endregion
 
         #region Methods
-        public Task<Result> SaveChunkAsync(long gameId, Region region, int chunkId, Stream chunk)
+        public Task<Result> SaveChunkAsync(long gameId, Region region, int chunkId, byte[] chunk)
         {
             return Result.CreateAsync(async () =>
             {
                 CloudBlobContainer recordingContainer = await this.GetRecordingContainerAsync();
                 CloudBlockBlob chunkReference = recordingContainer.GetBlockBlobReference(ChunkBlob.ToBlobName(gameId, region, chunkId));
 
-                await chunkReference.UploadFromStreamAsync(chunk);
+                await chunkReference.UploadFromByteArrayAsync(chunk, 0, chunk.Length);
+
+                LogTo.Debug("Uploaded chunk {0} for recording {1} {2}.", chunkId, region, gameId);
             });
         }
 
-        public Task<Result> SaveKeyFrameAsync(long gameId, Region region, int keyFrameId, Stream keyFrame)
+        public Task<Result> SaveKeyFrameAsync(long gameId, Region region, int keyFrameId, byte[] keyFrame)
         {
             return Result.CreateAsync(async () =>
             {
                 CloudBlobContainer recordingContainer = await this.GetRecordingContainerAsync();
                 CloudBlockBlob keyFrameReference = recordingContainer.GetBlockBlobReference(KeyFrameBlob.ToBlobName(gameId, region, keyFrameId));
 
-                await keyFrameReference.UploadFromStreamAsync(keyFrame);
+                await keyFrameReference.UploadFromByteArrayAsync(keyFrame, 0, keyFrame.Length);
+
+                LogTo.Debug("Uploaded keyframe {0} for recording {1} {2}.", keyFrameId, region, gameId);
             });
         }
 
@@ -83,6 +88,39 @@ namespace LeagueRecorder.Shared.Implementations.GameData
                 return await keyFrameReference.OpenReadAsync();
             });
         }
+
+        public Task<Result> DeleteChunksAsync(long gameId, Region region, int latestChunkId)
+        {
+            return Result.CreateAsync(async () =>
+            {
+                CloudBlobContainer recordingContainer = await this.GetRecordingContainerAsync();
+
+                for (int chunkId = 1; chunkId <= latestChunkId; chunkId++)
+                {
+                    CloudBlockBlob chunkReference = recordingContainer.GetBlockBlobReference(ChunkBlob.ToBlobName(gameId, region, chunkId));
+
+                    if (await chunkReference.DeleteIfExistsAsync() == false)
+                        throw new ResultException(Messages.ErrorWhileDeletingChunk);
+                }
+            });
+        }
+
+        public Task<Result> DeleteKeyFramesAsync(long gameId, Region region, int latestKeyFrameId)
+        {
+            return Result.CreateAsync(async () =>
+            {
+                CloudBlobContainer recordingContainer = await this.GetRecordingContainerAsync();
+
+                for (int keyFrameId = 1; keyFrameId <= latestKeyFrameId; keyFrameId++)
+                {
+                    CloudBlockBlob keyFrameReference = recordingContainer.GetBlockBlobReference(KeyFrameBlob.ToBlobName(gameId, region, keyFrameId));
+
+                    if (await keyFrameReference.DeleteIfExistsAsync() == false)
+                        throw new ResultException(Messages.ErrorWhileDeletingKeyFrame);
+                }
+            });
+        }
+
         #endregion
 
         #region Private Methods

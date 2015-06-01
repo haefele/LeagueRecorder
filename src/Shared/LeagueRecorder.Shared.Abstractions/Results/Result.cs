@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using LeagueRecorder.Shared.Abstractions.Recordings;
 using LiteGuard;
@@ -28,13 +29,6 @@ namespace LeagueRecorder.Shared.Abstractions.Results
             get { return this.State == ResultState.Success; }
         }
         /// <summary>
-        /// Gets a value indicating whether <see cref="State"/> is <see cref="ResultState.Warning"/>.
-        /// </summary>
-        public bool IsWarning
-        {
-            get { return this.State == ResultState.Warning; }
-        }
-        /// <summary>
         /// Gets a value indicating whether <see cref="State"/> is <see cref="ResultState.Error"/>.
         /// </summary>
         public bool IsError
@@ -60,6 +54,7 @@ namespace LeagueRecorder.Shared.Abstractions.Results
         /// <summary>
         /// Creates a new <see cref="Result"/> with <see cref="Result.State"/> = <see cref="ResultState.Success"/>.
         /// </summary>
+        [DebuggerStepThrough]
         public static Result AsSuccess()
         {
             return new Result
@@ -68,23 +63,10 @@ namespace LeagueRecorder.Shared.Abstractions.Results
             };
         }
         /// <summary>
-        /// Creates a new <see cref="Result"/> with the specified <paramref name="message"/> and <see cref="Result.State"/> = <see cref="ResultState.Warning"/>.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public static Result AsWarning(string message)
-        {
-            Guard.AgainstNullArgument("message", message);
-
-            return new Result
-            {
-                State = ResultState.Warning,
-                Message = message
-            };
-        }
-        /// <summary>
         /// Creates a new <see cref="Result"/> with the specified <paramref name="message"/> and <see cref="Result.State"/> = <see cref="ResultState.Error"/>.
         /// </summary>
         /// <param name="message">The message.</param>
+        [DebuggerStepThrough]
         public static Result AsError(string message)
         {
             Guard.AgainstNullArgument("message", message);
@@ -99,6 +81,7 @@ namespace LeagueRecorder.Shared.Abstractions.Results
         /// Creates a new <see cref="Result"/> with the specified <see cref="Exception.Message"/> and <see cref="Result.State"/> = <see cref="ResultState.Error"/>.
         /// </summary>
         /// <param name="exception">The exception.</param>
+        [DebuggerStepThrough]
         public static Result FromException(Exception exception)
         {
             Guard.AgainstNullArgument("exception", exception);
@@ -114,6 +97,7 @@ namespace LeagueRecorder.Shared.Abstractions.Results
         /// </summary>
         /// <typeparam name="T">The type of data the result can contain.</typeparam>
         /// <param name="data">The data.</param>
+        [DebuggerStepThrough]
         public static Result<T> AsSuccess<T>(T data)
         {
             Guard.AgainstNullArgumentIfNullable("data", data);
@@ -125,28 +109,12 @@ namespace LeagueRecorder.Shared.Abstractions.Results
             };
         }
         /// <summary>
-        /// Creates a new <see cref="Result{T}"/> with the specified <paramref name="data"/> and <paramref name="message"/> and <see cref="Result{T}.State"/> = <see cref="ResultState.Warning"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of data the result can contain.</typeparam>
-        /// <param name="data">The data.</param>
-        /// <param name="message">The message.</param>
-        public static Result<T> AsWarning<T>(T data, string message)
-        {
-            Guard.AgainstNullArgumentIfNullable("data", data);
-            Guard.AgainstNullArgument("message", message);
-
-            return new Result<T>
-            {
-                State = ResultState.Warning,
-                Data = data
-            };
-        }
-        /// <summary>
         /// Creates a new <see cref="Result{T}"/> containing <see cref="Result{T}.State"/> = <see cref="ResultState.Success"/> if the specified <paramref name="action"/> could be executed without a <see cref="Exception"/>.
         /// If a <see cref="Exception"/> occured the <see cref="Result{T}.State"/> will equal to <see cref="ResultState.Error"/>.
         /// </summary>
         /// <typeparam name="T">The type of data the result can contain.</typeparam>
         /// <param name="action">The action.</param>
+        [DebuggerStepThrough]
         public static Result<T> Create<T>(Func<T> action)
         {
             Guard.AgainstNullArgument("action", action);
@@ -173,6 +141,7 @@ namespace LeagueRecorder.Shared.Abstractions.Results
         /// </summary>
         /// <typeparam name="T">The type of data the result can contain.</typeparam>
         /// <param name="action">The action.</param>
+        [DebuggerStepThrough]
         public static async Task<Result<T>> CreateAsync<T>(Func<Task<T>> action)
         {
             Guard.AgainstNullArgument("action", action);
@@ -198,6 +167,7 @@ namespace LeagueRecorder.Shared.Abstractions.Results
         /// If a <see cref="Exception"/> occured the <see cref="Result{T}.State"/> will equal to <see cref="ResultState.Error"/>.
         /// </summary>
         /// <param name="action">The action.</param>
+        [DebuggerStepThrough]
         public static Result Create(Action action)
         {
             Guard.AgainstNullArgument("action", action);
@@ -224,6 +194,7 @@ namespace LeagueRecorder.Shared.Abstractions.Results
         /// If a <see cref="Exception"/> occured the <see cref="Result{T}.State"/> will equal to <see cref="ResultState.Error"/>.
         /// </summary>
         /// <param name="action">The action.</param>
+        [DebuggerStepThrough]
         public static async Task<Result> CreateAsync(Func<Task> action)
         {
             Guard.AgainstNullArgument("action", action);

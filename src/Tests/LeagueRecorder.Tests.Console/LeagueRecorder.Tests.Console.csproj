@@ -114,6 +114,10 @@
       <Project>{4dc0255e-dfd6-4bca-93aa-58b1f3a506c1}</Project>
       <Name>LeagueRecorder.Shared.Localization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Worker\LeagueRecorder.Worker.Recorder\LeagueRecorder.Worker.Recorder.csproj">
+      <Project>{391c019f-ea90-42e9-9fa1-b6b145f8e60d}</Project>
+      <Name>LeagueRecorder.Worker.Recorder</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Worker\LeagueRecorder.Worker.SummonerInGameFinder\LeagueRecorder.Worker.SummonerInGameFinder.csproj">
       <Project>{7E4587E7-EEBB-41E4-B33F-6060E11475C0}</Project>
       <Name>LeagueRecorder.Worker.SummonerInGameFinder</Name>

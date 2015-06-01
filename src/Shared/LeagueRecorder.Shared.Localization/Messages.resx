@@ -118,30 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ChunkDoesNotExist" xml:space="preserve">
-    <value />
+    <value>The chunk does not exist.</value>
+  </data>
+  <data name="ErrorWhileDeletingChunk" xml:space="preserve">
+    <value>Error while deleting the chunk.</value>
+  </data>
+  <data name="ErrorWhileDeletingKeyFrame" xml:space="preserve">
+    <value>Error while deleting the keyframe.</value>
   </data>
   <data name="KeyFrameDoesNotExist" xml:space="preserve">
-    <value />
+    <value>The keyframe does not exist.</value>
+  </data>
+  <data name="NoRecordingRequest" xml:space="preserve">
+    <value>There is currently no recording requested.</value>
   </data>
   <data name="RateLimitExceeded" xml:space="preserve">
-    <value />
+    <value>The rate limit was exceeded.</value>
   </data>
   <data name="RecordDoesNotExist" xml:space="preserve">
-    <value />
+    <value>The record does not exist.</value>
   </data>
   <data name="RecordingDoesNotExist" xml:space="preserve">
-    <value />
+    <value>The recording does not eixst.</value>
   </data>
   <data name="RecordingInsertFailed" xml:space="preserve">
-    <value />
+    <value>Failed to insert the recording.</value>
   </data>
   <data name="SummonerNotFound" xml:space="preserve">
-    <value />
+    <value>The summoner was not found.</value>
   </data>
   <data name="SummonerNotInGame" xml:space="preserve">
-    <value />
+    <value>The summoner is not ingame.</value>
   </data>
   <data name="UnexpectedError" xml:space="preserve">
-    <value />
+    <value>Unexpected error.</value>
   </data>
 </root>
