@@ -3,16 +3,22 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
 using Anotar.NLog;
+using JetBrains.Annotations;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.GameData;
 using LeagueRecorder.Shared.Abstractions.League;
 using LeagueRecorder.Shared.Abstractions.Recordings;
 using LeagueRecorder.Shared.Abstractions.Results;
+using LiteGuard;
 
 namespace LeagueRecorder.Worker.Recorder
 {
+    /// <summary>
+    /// This class is responsible for recording a single game.
+    /// </summary>
     public class GameRecorder : IDisposable
     {
+        #region Fields
         private readonly RecordingRequest _recording;
         private readonly ILeagueApiClient _leagueApiClient;
         private readonly ILeagueSpectatorApiClient _leagueSpectatorApiClient;
@@ -22,19 +28,44 @@ namespace LeagueRecorder.Worker.Recorder
 
         private readonly TaskCompletionSource<object> _taskCompletionSource;
         private readonly Timer _timer;
-        
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Gets the recording request that is beeing recorded here.
+        /// </summary>
         public RecordingRequest RecordingRequest
         {
             get { return this._recording; }
         }
-
+        /// <summary>
+        /// Gets the task that contains the current status of the recording.
+        /// </summary>
         public Task Task
         {
             get { return this._taskCompletionSource.Task; }
         }
+        #endregion
 
-        public GameRecorder(RecordingRequest recording, ILeagueApiClient leagueApiClient, ILeagueSpectatorApiClient leagueSpectatorApiClient, IRecordingStorage recordingStorage, IGameDataStorage gameDataStorage, IConfig config)
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameRecorder"/> class.
+        /// </summary>
+        /// <param name="recording">The recording.</param>
+        /// <param name="leagueApiClient">The league API client.</param>
+        /// <param name="leagueSpectatorApiClient">The league spectator API client.</param>
+        /// <param name="recordingStorage">The recording storage.</param>
+        /// <param name="gameDataStorage">The game data storage.</param>
+        /// <param name="config">The configuration.</param>
+        public GameRecorder([NotNull]RecordingRequest recording, [NotNull]ILeagueApiClient leagueApiClient, [NotNull]ILeagueSpectatorApiClient leagueSpectatorApiClient, [NotNull]IRecordingStorage recordingStorage, [NotNull]IGameDataStorage gameDataStorage, [NotNull]IConfig config)
         {
+            Guard.AgainstNullArgument("recording", recording);
+            Guard.AgainstNullArgument("leagueApiClient", leagueApiClient);
+            Guard.AgainstNullArgument("leagueSpectatorApiClient", leagueSpectatorApiClient);
+            Guard.AgainstNullArgument("recordingStorage", recordingStorage);
+            Guard.AgainstNullArgument("gameDataStorage", gameDataStorage);
+            Guard.AgainstNullArgument("config", config);
+
             this._recording = recording;
             this._leagueApiClient = leagueApiClient;
             this._leagueSpectatorApiClient = leagueSpectatorApiClient;
@@ -50,7 +81,9 @@ namespace LeagueRecorder.Worker.Recorder
             
             this._timer.Start();
         }
+        #endregion
 
+        #region Private Methods
         private async void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             if (this._taskCompletionSource.Task.IsCompleted == false)
@@ -264,6 +297,7 @@ namespace LeagueRecorder.Worker.Recorder
 
             this.Dispose();
         }
+        #endregion
 
         #region Implementation of IDisposable
         /// <summary>

@@ -122,7 +122,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 var entity = (RecordingTable)result.Result;
 
                 TableOperation deleteOperation = TableOperation.Delete(entity);
-                TableResult deleteResult = await recordingTable.ExecuteAsync(deleteOperation);
+                await recordingTable.ExecuteAsync(deleteOperation);
             });
         }
 

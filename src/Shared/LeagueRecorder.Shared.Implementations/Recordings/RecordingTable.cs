@@ -30,15 +30,15 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
         public DateTime? CreateTime { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public TimeSpan? GameLength { get; set; }
+        public long? GameLength { get; set; }
         public int? EndStartupChunkId { get; set; }
         public int? StartGameChunkId { get; set; }
         public int? EndGameChunkId { get; set; }
         public int? EndGameKeyFrameId { get; set; }
-        public TimeSpan? ChunkTimeInterval { get; set; }
-        public TimeSpan? KeyFrameTimeInterval { get; set; }
-        public TimeSpan? ClientAddedLag { get; set; }
-        public TimeSpan? DelayTime { get; set; }
+        public long? ChunkTimeInterval { get; set; }
+        public long? KeyFrameTimeInterval { get; set; }
+        public long? ClientAddedLag { get; set; }
+        public long? DelayTime { get; set; }
         public int? InterestScore { get; set; }
         #endregion
 
@@ -66,15 +66,15 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 CreateTime = recording.CreateTime,
                 StartTime = recording.StartTime,
                 EndTime = recording.EndTime,
-                GameLength = recording.GameLength,
+                GameLength = recording.GameLength.HasValue ? recording.GameLength.Value.Ticks : (long?)null,
                 EndStartupChunkId = recording.EndStartupChunkId,
                 StartGameChunkId = recording.StartGameChunkId,
                 EndGameChunkId = recording.EndGameChunkId,
                 EndGameKeyFrameId = recording.EndGameKeyFrameId,
-                ChunkTimeInterval = recording.ChunkTimeInterval,
-                KeyFrameTimeInterval = recording.KeyFrameTimeInterval,
-                ClientAddedLag = recording.ClientAddedLag,
-                DelayTime = recording.DelayTime,
+                ChunkTimeInterval = recording.ChunkTimeInterval.HasValue ? recording.ChunkTimeInterval.Value.Ticks : (long?)null,
+                KeyFrameTimeInterval = recording.KeyFrameTimeInterval.HasValue ? recording.KeyFrameTimeInterval.Value.Ticks : (long?)null,
+                ClientAddedLag = recording.ClientAddedLag.HasValue ? recording.ClientAddedLag.Value.Ticks : (long?)null,
+                DelayTime = recording.DelayTime.HasValue ? recording.DelayTime.Value.Ticks : (long?)null,
                 InterestScore = recording.InterestScore
             };
         }
@@ -95,15 +95,15 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 CreateTime = this.CreateTime,
                 StartTime = this.StartTime,
                 EndTime = this.EndTime,
-                GameLength = this.GameLength,
+                GameLength = this.GameLength.HasValue ? TimeSpan.FromTicks(this.GameLength.Value) : (TimeSpan?)null,
                 EndStartupChunkId = this.EndStartupChunkId,
                 StartGameChunkId = this.StartGameChunkId,
                 EndGameChunkId = this.EndGameChunkId,
                 EndGameKeyFrameId = this.EndGameKeyFrameId,
-                ChunkTimeInterval = this.ChunkTimeInterval,
-                KeyFrameTimeInterval = this.KeyFrameTimeInterval,
-                ClientAddedLag = this.ClientAddedLag,
-                DelayTime = this.DelayTime,
+                ChunkTimeInterval = this.ChunkTimeInterval.HasValue ? TimeSpan.FromTicks(this.ChunkTimeInterval.Value) : (TimeSpan?)null,
+                KeyFrameTimeInterval = this.KeyFrameTimeInterval.HasValue ? TimeSpan.FromTicks(this.KeyFrameTimeInterval.Value) : (TimeSpan?)null,
+                ClientAddedLag = this.ClientAddedLag.HasValue ? TimeSpan.FromTicks(this.ClientAddedLag.Value) : (TimeSpan?)null,
+                DelayTime = this.DelayTime.HasValue ? TimeSpan.FromTicks(this.DelayTime.Value) : (TimeSpan?)null,
                 InterestScore = this.InterestScore
             };
         }
