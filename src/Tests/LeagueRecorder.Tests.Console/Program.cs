@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using LeagueRecorder.Shared.Abstractions;
+using LeagueRecorder.Shared.Abstractions.Summoners;
 using LeagueRecorder.Shared.Implementations.GameData;
 using LeagueRecorder.Shared.Implementations.League;
 using LeagueRecorder.Shared.Implementations.Recordings;
@@ -39,7 +40,7 @@ namespace LeagueRecorder.Tests.Console
             var recordingQueue = new RecordingQueue(cloudStorageAccount.CreateCloudQueueClient(), config);
             var recordingStorage = new RecordingStorage(cloudStorageAccount.CreateCloudTableClient(), config);
             var gameDataStorage = new GameDataStorage(cloudStorageAccount.CreateCloudBlobClient(), config);
-
+            
             var finder = new SummonerInGameFinderWorker(apiClient, summonerStorage, recordingQueue, recordingStorage, config);
             finder.StartAsync().Wait();
 
@@ -74,7 +75,7 @@ namespace LeagueRecorder.Tests.Console
 
         public int CountOfSummonersToCheckIfIngameAtOnce
         {
-            get { return 20; }
+            get { return 50; }
         }
 
         public string RiotApiKey

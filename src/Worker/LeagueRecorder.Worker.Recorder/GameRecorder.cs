@@ -75,7 +75,7 @@ namespace LeagueRecorder.Worker.Recorder
             this._config = config;
             
             this._timer = new Timer();
-            this._timer.Interval = TimeSpan.FromSeconds(30).TotalMilliseconds;
+            this._timer.Interval = TimeSpan.FromSeconds(20).TotalMilliseconds;
             this._timer.Elapsed += this.TimerOnElapsed;
             
             this._timer.Start();
@@ -114,8 +114,10 @@ namespace LeagueRecorder.Worker.Recorder
                 }
                 else
                 {
-                    await this.LoadChunksAsync(recordingResult.Data, lastGameInfoResult.Data);
-                    await this.LoadKeyFramesAsync(recordingResult.Data, lastGameInfoResult.Data);
+                    var loadChunkTask = this.LoadChunksAsync(recordingResult.Data, lastGameInfoResult.Data);
+                    var loadKeyFrameTask = this.LoadKeyFramesAsync(recordingResult.Data, lastGameInfoResult.Data);
+
+                    await Task.WhenAll(loadChunkTask, loadKeyFrameTask);
 
                     await this.LoadEndGameDataAsync(recordingResult.Data, lastGameInfoResult.Data);
                 }
@@ -287,12 +289,6 @@ namespace LeagueRecorder.Worker.Recorder
         
         private async Task DeleteRecordingWithAllGameDataAsync(Recording recording)
         {
-            Result deleteResult = await this._recordingStorage.DeleteRecordingAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region);
-            if (deleteResult.IsError)
-            {
-                LogTo.Error("Error while deleting the recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, deleteResult.Message);
-            }
-
             Result deleteChunksResult = await this._gameDataStorage.DeleteChunksAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region, recording.LatestChunkId);
             if (deleteChunksResult.IsError)
             {
@@ -303,6 +299,12 @@ namespace LeagueRecorder.Worker.Recorder
             if (deleteKeyFramesResult.IsError)
             {
                 LogTo.Error("Error while deleting the keyframes of recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, deleteKeyFramesResult.Message);
+            }
+
+            Result deleteResult = await this._recordingStorage.DeleteRecordingAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region);
+            if (deleteResult.IsError)
+            {
+                LogTo.Error("Error while deleting the recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, deleteResult.Message);
             }
         }
         
