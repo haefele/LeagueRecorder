@@ -49,10 +49,15 @@ namespace LeagueRecorder.Tests.Console
                         
             var tokenSource = new CancellationTokenSource();
             
-            finder.RunAsync(tokenSource.Token);
-            recorder.RunAsync(tokenSource.Token);
+            var task1 = finder.RunAsync(tokenSource.Token);
+            var task2 = recorder.RunAsync(tokenSource.Token);
 
             System.Console.ReadLine();
+            System.Console.WriteLine("Stopping");
+
+            tokenSource.Cancel();
+
+            Task.WaitAll(task1, task2);
         }
     }
 

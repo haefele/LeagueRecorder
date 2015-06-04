@@ -87,74 +87,83 @@ namespace LeagueRecorder.Worker.Recorder
         #region Private Methods
         private async void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            if (this.State == GameRecorderState.Running)
-                this._timer.Stop();
-
-            Result<Recording> recordingResult = await this._recordingStorage.GetRecordingAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region);
-            if (recordingResult.IsError)
+            try
             {
-                LogTo.Error("Error while loading the recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, recordingResult.Message);
+                if (this.State == GameRecorderState.Running)
+                    this._timer.Stop();
 
-                this.TrySetState(GameRecorderState.Error);
-                return;
-            }
-            else
-            {
-                LogTo.Debug("Updating recording {0} {1}.", this.RecordingRequest.Region, this.RecordingRequest.GameId);
-
-                await this.LoadLeagueVersionAsync(recordingResult.Data);
-                await this.LoadLeagueSpectatorVersionAsync(recordingResult.Data);
-
-                Result<RiotLastGameInfo> lastGameInfoResult = await this._leagueSpectatorApiClient.GetLastGameInfo(this.RecordingRequest.Region, this.RecordingRequest.GameId);
-                if (lastGameInfoResult.IsError)
+                Result<Recording> recordingResult = await this._recordingStorage.GetRecordingAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region);
+                if (recordingResult.IsError)
                 {
-                    LogTo.Error("Error while retrieving the last-game-info for recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, lastGameInfoResult.Message);
+                    LogTo.Error("Error while loading the recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, recordingResult.Message);
 
-                    recordingResult.Data.ErrorCount++;
+                    this.TrySetState(GameRecorderState.Error);
+                    return;
                 }
                 else
                 {
-                    var loadChunkTask = this.LoadChunksAsync(recordingResult.Data, lastGameInfoResult.Data);
-                    var loadKeyFrameTask = this.LoadKeyFramesAsync(recordingResult.Data, lastGameInfoResult.Data);
+                    LogTo.Debug("Updating recording {0} {1}.", this.RecordingRequest.Region, this.RecordingRequest.GameId);
 
-                    await Task.WhenAll(loadChunkTask, loadKeyFrameTask);
+                    await this.LoadLeagueVersionAsync(recordingResult.Data);
+                    await this.LoadLeagueSpectatorVersionAsync(recordingResult.Data);
 
-                    await this.LoadEndGameDataAsync(recordingResult.Data, lastGameInfoResult.Data);
-                }
+                    Result<RiotLastGameInfo> lastGameInfoResult = await this._leagueSpectatorApiClient.GetLastGameInfo(this.RecordingRequest.Region, this.RecordingRequest.GameId);
+                    if (lastGameInfoResult.IsError)
+                    {
+                        LogTo.Error("Error while retrieving the last-game-info for recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, lastGameInfoResult.Message);
 
-                if (recordingResult.Data.EndGameChunkId.HasValue &&
-                    recordingResult.Data.EndGameKeyFrameId.HasValue &&
-                    recordingResult.Data.LatestChunkId == recordingResult.Data.EndGameChunkId.Value &&
-                    recordingResult.Data.LatestKeyFrameId == recordingResult.Data.EndGameKeyFrameId.Value)
-                {
-                    LogTo.Info("The recording {0} {1} has finished. Yeah!", this.RecordingRequest.Region, this.RecordingRequest.GameId);
+                        recordingResult.Data.ErrorCount++;
+                    }
+                    else
+                    {
+                        var loadChunkTask = this.LoadChunksAsync(recordingResult.Data, lastGameInfoResult.Data);
+                        var loadKeyFrameTask = this.LoadKeyFramesAsync(recordingResult.Data, lastGameInfoResult.Data);
 
-                    await this.SaveRecordAsync(recordingResult.Data);
-                    await this._recordingStorage.DeleteRecordingAsync(recordingResult.Data.GameId, recordingResult.Data.Region);
+                        await Task.WhenAll(loadChunkTask, loadKeyFrameTask);
 
-                    this.TrySetState(GameRecorderState.Finished);
-                    return;
-                }
+                        await this.LoadEndGameDataAsync(recordingResult.Data, lastGameInfoResult.Data);
+                    }
 
-                if (recordingResult.Data.ErrorCount > this._config.RecordingMaxErrorCount)
-                {
-                    LogTo.Info("The recording {0} {1} exceeded the error count of {2}. Deleting it.", this.RecordingRequest.Region, this.RecordingRequest.GameId, this._config.RecordingMaxErrorCount);
+                    if (recordingResult.Data.EndGameChunkId.HasValue &&
+                        recordingResult.Data.EndGameKeyFrameId.HasValue &&
+                        recordingResult.Data.LatestChunkId == recordingResult.Data.EndGameChunkId.Value &&
+                        recordingResult.Data.LatestKeyFrameId == recordingResult.Data.EndGameKeyFrameId.Value)
+                    {
+                        LogTo.Info("The recording {0} {1} has finished. Yeah!", this.RecordingRequest.Region, this.RecordingRequest.GameId);
 
-                    await this.DeleteRecordingWithAllGameDataAsync(recordingResult.Data);
-                    this.TrySetState(GameRecorderState.Error);
+                        await this.SaveRecordAsync(recordingResult.Data);
+                        await this._recordingStorage.DeleteRecordingAsync(recordingResult.Data.GameId, recordingResult.Data.Region);
 
-                    return;
-                }
-                
-                Result saveResult = await this._recordingStorage.SaveRecordingAsync(recordingResult.Data);
-                if (saveResult.IsError)
-                {
-                    LogTo.Error("Error while saving the recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, saveResult.Message);
+                        this.TrySetState(GameRecorderState.Finished);
+                        return;
+                    }
+
+                    if (recordingResult.Data.ErrorCount > this._config.RecordingMaxErrorCount)
+                    {
+                        LogTo.Info("The recording {0} {1} exceeded the error count of {2}. Deleting it.", this.RecordingRequest.Region, this.RecordingRequest.GameId, this._config.RecordingMaxErrorCount);
+
+                        await this.DeleteRecordingWithAllGameDataAsync(recordingResult.Data);
+                        this.TrySetState(GameRecorderState.Error);
+
+                        return;
+                    }
+
+                    Result saveResult = await this._recordingStorage.SaveRecordingAsync(recordingResult.Data);
+                    if (saveResult.IsError)
+                    {
+                        LogTo.Error("Error while saving the recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, saveResult.Message);
+                    }
                 }
             }
-
-            if (this.State == GameRecorderState.Running)
-                this._timer.Start();
+            catch (Exception exception)
+            {
+                LogTo.ErrorException("Exception while recording game.", exception);
+            }
+            finally
+            {
+                if (this.State == GameRecorderState.Running)
+                    this._timer.Start();
+            }
         }
 
         private async Task LoadLeagueVersionAsync(Recording recording)
