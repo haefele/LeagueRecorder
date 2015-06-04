@@ -10,6 +10,7 @@ using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Implementations.GameData;
 using LeagueRecorder.Shared.Implementations.League;
 using LeagueRecorder.Shared.Implementations.Recordings;
+using LeagueRecorder.Shared.Implementations.Records;
 using LeagueRecorder.Shared.Implementations.Summoners;
 using LeagueRecorder.Worker.SummonerInGameFinder;
 using Microsoft.WindowsAzure.Storage;
@@ -34,6 +35,7 @@ namespace LeagueRecorder.Tests.Console
             var apiClient = new LeagueApiClient(config);
             var spectatorApiClient = new LeagueSpectatorApiClient();
             var summonerStorage = new SummonerStorage(sessionFactory, config);
+            var recordStorage = new RecordStorage(sessionFactory);
             var recordingQueue = new RecordingQueue(cloudStorageAccount.CreateCloudQueueClient(), config);
             var recordingStorage = new RecordingStorage(cloudStorageAccount.CreateCloudTableClient(), config);
             var gameDataStorage = new GameDataStorage(cloudStorageAccount.CreateCloudBlobClient(), config);
@@ -41,7 +43,7 @@ namespace LeagueRecorder.Tests.Console
             var finder = new SummonerInGameFinderWorker(apiClient, summonerStorage, recordingQueue, recordingStorage, config);
             finder.StartAsync().Wait();
 
-            var recorder = new RecorderWorker(recordingQueue, apiClient, spectatorApiClient, recordingStorage, gameDataStorage, config);
+            var recorder = new RecorderWorker(recordingQueue, apiClient, spectatorApiClient, recordingStorage, gameDataStorage, recordStorage, config);
             recorder.StartAsync().Wait();
                         
             var tokenSource = new CancellationTokenSource();

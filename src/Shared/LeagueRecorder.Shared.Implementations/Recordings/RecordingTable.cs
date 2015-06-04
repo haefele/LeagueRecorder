@@ -57,7 +57,6 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             return new RecordingTable(ToPartitionKey(recording.Region), ToRowKey(recording.GameId))
             {
                 ErrorCount = recording.ErrorCount,
-                HasFinished = recording.HasFinished,
                 LatestChunkId = recording.LatestChunkId,
                 LatestKeyFrameId = recording.LatestKeyFrameId,
                 LeagueVersion = recording.LeagueVersion != null ? recording.LeagueVersion.ToString() : null,
@@ -86,7 +85,6 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 Region = Region.FromString(this.PartitionKey),
                 GameId = long.Parse(this.RowKey),
                 ErrorCount = this.ErrorCount,
-                HasFinished = this.HasFinished,
                 LatestChunkId = this.LatestChunkId,
                 LatestKeyFrameId = this.LatestKeyFrameId,
                 LeagueVersion = this.LeagueVersion != null ? Version.Parse(this.LeagueVersion) : null,

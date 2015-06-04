@@ -8,6 +8,7 @@ using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.GameData;
 using LeagueRecorder.Shared.Abstractions.League;
 using LeagueRecorder.Shared.Abstractions.Recordings;
+using LeagueRecorder.Shared.Abstractions.Records;
 using LeagueRecorder.Shared.Abstractions.Results;
 using LiteGuard;
 
@@ -24,9 +25,9 @@ namespace LeagueRecorder.Worker.Recorder
         private readonly ILeagueSpectatorApiClient _leagueSpectatorApiClient;
         private readonly IRecordingStorage _recordingStorage;
         private readonly IGameDataStorage _gameDataStorage;
+        private readonly IRecordStorage _recordStorage;
         private readonly IConfig _config;
 
-        private readonly TaskCompletionSource<object> _taskCompletionSource;
         private readonly Timer _timer;
         #endregion
 
@@ -39,31 +40,30 @@ namespace LeagueRecorder.Worker.Recorder
             get { return this._recording; }
         }
         /// <summary>
-        /// Gets the task that contains the current status of the recording.
+        /// Gets the current state of the game recorder.
         /// </summary>
-        public Task Task
-        {
-            get { return this._taskCompletionSource.Task; }
-        }
+        public GameRecorderState State { get; private set; }
         #endregion
 
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameRecorder"/> class.
+        /// Initializes a new instance of the <see cref="GameRecorder" /> class.
         /// </summary>
         /// <param name="recording">The recording.</param>
         /// <param name="leagueApiClient">The league API client.</param>
         /// <param name="leagueSpectatorApiClient">The league spectator API client.</param>
         /// <param name="recordingStorage">The recording storage.</param>
         /// <param name="gameDataStorage">The game data storage.</param>
+        /// <param name="recordStorage">The record storage.</param>
         /// <param name="config">The configuration.</param>
-        public GameRecorder([NotNull]RecordingRequest recording, [NotNull]ILeagueApiClient leagueApiClient, [NotNull]ILeagueSpectatorApiClient leagueSpectatorApiClient, [NotNull]IRecordingStorage recordingStorage, [NotNull]IGameDataStorage gameDataStorage, [NotNull]IConfig config)
+        public GameRecorder([NotNull]RecordingRequest recording, [NotNull]ILeagueApiClient leagueApiClient, [NotNull]ILeagueSpectatorApiClient leagueSpectatorApiClient, [NotNull]IRecordingStorage recordingStorage, [NotNull]IGameDataStorage gameDataStorage, [NotNull]IRecordStorage recordStorage, [NotNull]IConfig config)
         {
             Guard.AgainstNullArgument("recording", recording);
             Guard.AgainstNullArgument("leagueApiClient", leagueApiClient);
             Guard.AgainstNullArgument("leagueSpectatorApiClient", leagueSpectatorApiClient);
             Guard.AgainstNullArgument("recordingStorage", recordingStorage);
             Guard.AgainstNullArgument("gameDataStorage", gameDataStorage);
+            Guard.AgainstNullArgument("recordStorage", recordStorage);
             Guard.AgainstNullArgument("config", config);
 
             this._recording = recording;
@@ -71,29 +71,32 @@ namespace LeagueRecorder.Worker.Recorder
             this._leagueSpectatorApiClient = leagueSpectatorApiClient;
             this._recordingStorage = recordingStorage;
             this._gameDataStorage = gameDataStorage;
+            this._recordStorage = recordStorage;
             this._config = config;
-
-            this._taskCompletionSource = new TaskCompletionSource<object>();
-
+            
             this._timer = new Timer();
             this._timer.Interval = TimeSpan.FromSeconds(30).TotalMilliseconds;
             this._timer.Elapsed += this.TimerOnElapsed;
             
             this._timer.Start();
+
+            this.State = GameRecorderState.Running;
         }
         #endregion
 
         #region Private Methods
         private async void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            if (this._taskCompletionSource.Task.IsCompleted == false)
+            if (this.State == GameRecorderState.Running)
                 this._timer.Stop();
 
             Result<Recording> recordingResult = await this._recordingStorage.GetRecordingAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region);
             if (recordingResult.IsError)
             {
                 LogTo.Error("Error while loading the recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, recordingResult.Message);
-                this.Dispose();
+
+                this.TrySetState(GameRecorderState.Error);
+                return;
             }
             else
             {
@@ -117,23 +120,30 @@ namespace LeagueRecorder.Worker.Recorder
                     await this.LoadEndGameDataAsync(recordingResult.Data, lastGameInfoResult.Data);
                 }
 
-                if (recordingResult.Data.ErrorCount > this._config.RecordingMaxErrorCount)
-                {
-                    LogTo.Info("The recording {0} {1} exceeded the error count of {2}. Deleting it.", this.RecordingRequest.Region, this.RecordingRequest.GameId, this._config.RecordingMaxErrorCount);
-
-                    await this.DeleteRecordingAsync(recordingResult.Data);
-                }
-
-                if (recordingResult.Data.EndGameChunkId.HasValue && 
-                    recordingResult.Data.EndGameKeyFrameId.HasValue && 
-                    recordingResult.Data.LatestChunkId == recordingResult.Data.EndGameChunkId.Value && 
+                if (recordingResult.Data.EndGameChunkId.HasValue &&
+                    recordingResult.Data.EndGameKeyFrameId.HasValue &&
+                    recordingResult.Data.LatestChunkId == recordingResult.Data.EndGameChunkId.Value &&
                     recordingResult.Data.LatestKeyFrameId == recordingResult.Data.EndGameKeyFrameId.Value)
                 {
                     LogTo.Info("The recording {0} {1} has finished. Yeah!", this.RecordingRequest.Region, this.RecordingRequest.GameId);
 
-                    recordingResult.Data.HasFinished = true;
+                    await this.SaveRecordAsync(recordingResult.Data);
+                    await this._recordingStorage.DeleteRecordingAsync(recordingResult.Data.GameId, recordingResult.Data.Region);
+
+                    this.TrySetState(GameRecorderState.Finished);
+                    return;
                 }
 
+                if (recordingResult.Data.ErrorCount > this._config.RecordingMaxErrorCount)
+                {
+                    LogTo.Info("The recording {0} {1} exceeded the error count of {2}. Deleting it.", this.RecordingRequest.Region, this.RecordingRequest.GameId, this._config.RecordingMaxErrorCount);
+
+                    await this.DeleteRecordingWithAllGameDataAsync(recordingResult.Data);
+                    this.TrySetState(GameRecorderState.Error);
+
+                    return;
+                }
+                
                 Result saveResult = await this._recordingStorage.SaveRecordingAsync(recordingResult.Data);
                 if (saveResult.IsError)
                 {
@@ -141,7 +151,7 @@ namespace LeagueRecorder.Worker.Recorder
                 }
             }
 
-            if (this._taskCompletionSource.Task.IsCompleted == false)
+            if (this.State == GameRecorderState.Running)
                 this._timer.Start();
         }
 
@@ -275,7 +285,7 @@ namespace LeagueRecorder.Worker.Recorder
             }
         }
         
-        private async Task DeleteRecordingAsync(Recording recording)
+        private async Task DeleteRecordingWithAllGameDataAsync(Recording recording)
         {
             Result deleteResult = await this._recordingStorage.DeleteRecordingAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region);
             if (deleteResult.IsError)
@@ -294,8 +304,52 @@ namespace LeagueRecorder.Worker.Recorder
             {
                 LogTo.Error("Error while deleting the keyframes of recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, deleteKeyFramesResult.Message);
             }
+        }
+        
+        private async Task SaveRecordAsync(Recording recording)
+        {
+            var record = new Record
+            {
+                GameId = recording.GameId,
+                Region = recording.Region,
+                LeagueVersion = recording.LeagueVersion,
+                SpectatorVersion = recording.SpectatorVersion,
+                GameInformation = new GameInformation
+                {
+                    EndTime = recording.EndTime.Value,
+                    GameLength = recording.GameLength.Value,
+                    InterestScore = recording.InterestScore.Value,
+                    StartTime = recording.StartTime.Value
+                },
+                ReplayInformation = new ReplayInformation
+                {
+                    ChunkTimeInterval = recording.ChunkTimeInterval.Value,
+                    ClientAddedLag = recording.ClientAddedLag.Value,
+                    CreateTime = recording.CreateTime.Value,
+                    DelayTime = recording.DelayTime.Value,
+                    EncryptionKey = recording.EncryptionKey,
+                    EndGameChunkId = recording.EndGameChunkId.Value,
+                    EndGameKeyFrameId = recording.EndGameKeyFrameId.Value,
+                    EndStartupChunkId = recording.EndStartupChunkId.Value,
+                    KeyFrameTimeInterval = recording.KeyFrameTimeInterval.Value,
+                    StartGameChunkId = recording.StartGameChunkId.Value
+                }
+            };
 
-            this.Dispose();
+            var saveResult = await this._recordStorage.SaveRecordAsync(record);
+
+            if (saveResult.IsError)
+            {
+                LogTo.Error("Error while saving finished record {0} {1}: {2}", recording.Region, recording.GameId, saveResult.Message);
+            }
+        }
+
+        private void TrySetState(GameRecorderState state)
+        {
+            if (this.State.HasEnded())
+                return;
+
+            this.State = state;
         }
         #endregion
 
@@ -306,7 +360,7 @@ namespace LeagueRecorder.Worker.Recorder
         public void Dispose()
         {
             this._timer.Dispose();
-            this._taskCompletionSource.TrySetCanceled();
+            this.TrySetState(GameRecorderState.Cancelled);
         }
         #endregion
     }

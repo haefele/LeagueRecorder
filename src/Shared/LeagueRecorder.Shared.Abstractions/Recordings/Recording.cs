@@ -8,7 +8,6 @@ namespace LeagueRecorder.Shared.Abstractions.Recordings
         public Region Region { get; set; }
 
         public int ErrorCount { get; set; }
-        public bool HasFinished { get; set; }
         public int LatestChunkId { get; set; }
         public int LatestKeyFrameId { get; set; }
 
