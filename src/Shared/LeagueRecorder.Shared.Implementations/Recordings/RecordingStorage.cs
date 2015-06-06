@@ -49,6 +49,20 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             });
         }
 
+        public Task<Result> SaveNewRecordingAsync([NotNull] Recording recording)
+        {
+            return Result.CreateAsync(async () =>
+            {
+                CloudTable recordingTable = await this.GetRecordingTableAsync();
+
+                TableOperation operation = TableOperation.Insert(RecordingTable.FromRecording(recording));
+                TableResult result = await recordingTable.ExecuteAsync(operation);
+
+                if (result.Etag == null)
+                    throw new ResultException(Messages.RecordingAlreadyExists);
+            });
+        }
+
         public Task<Result> SaveRecordingAsync(Recording recording)
         {
             return Result.CreateAsync(async () =>

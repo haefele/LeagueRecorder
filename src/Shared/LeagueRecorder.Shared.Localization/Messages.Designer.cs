@@ -124,6 +124,15 @@ namespace LeagueRecorder.Shared.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The recording already exists..
+        /// </summary>
+        public static string RecordingAlreadyExists {
+            get {
+                return ResourceManager.GetString("RecordingAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The recording does not eixst..
         /// </summary>
         public static string RecordingDoesNotExist {

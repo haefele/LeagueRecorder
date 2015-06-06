@@ -11,6 +11,7 @@ namespace LeagueRecorder.Shared.Abstractions.Recordings
     {
         Task<Result> IsGameRecording(long gameId, [NotNull]Region region);
 
+        Task<Result> SaveNewRecordingAsync([NotNull] Recording recording);
         Task<Result> SaveRecordingAsync([NotNull]Recording recording);
         Task<Result<Recording>> GetRecordingAsync(long gameId, [NotNull]Region region);
 

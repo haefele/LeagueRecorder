@@ -302,12 +302,14 @@ namespace LeagueRecorder.Worker.Recorder
             if (deleteChunksResult.IsError)
             {
                 LogTo.Error("Error while deleting the chunks of recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, deleteChunksResult.Message);
+                return;
             }
 
             Result deleteKeyFramesResult = await this._gameDataStorage.DeleteKeyFramesAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region, recording.LatestKeyFrameId);
             if (deleteKeyFramesResult.IsError)
             {
                 LogTo.Error("Error while deleting the keyframes of recording {0} {1}: {2}", this.RecordingRequest.Region, this.RecordingRequest.GameId, deleteKeyFramesResult.Message);
+                return;
             }
 
             Result deleteResult = await this._recordingStorage.DeleteRecordingAsync(this.RecordingRequest.GameId, this.RecordingRequest.Region);
@@ -371,7 +373,6 @@ namespace LeagueRecorder.Worker.Recorder
         public void Dispose()
         {
             this._timer.Dispose();
-            this.TrySetState(GameRecorderState.Cancelled);
         }
         #endregion
     }

@@ -96,7 +96,7 @@ namespace LeagueRecorder.Worker.SummonerInGameFinder
                 EncryptionKey = currentGameResult.Data.EncryptionKey
             };
 
-            var saveResult = await this._recordingStorage.SaveRecordingAsync(recording);
+            var saveResult = await this._recordingStorage.SaveNewRecordingAsync(recording);
             if (saveResult.IsError)
             {
                 LogTo.Error("Error while saving a recording: {0}", saveResult.Message);

@@ -89,7 +89,7 @@ namespace LeagueRecorder.Worker.Recorder
 
             foreach (var runningRecording in this._gameRecorders.Keys)
             {
-                if (runningRecording.State == GameRecorderState.Cancelled)
+                if (runningRecording.State == GameRecorderState.Running)
                     await this._recordingQueue.EnqueueAsync(runningRecording.RecordingRequest);
 
                 object output;

@@ -138,6 +138,9 @@
   <data name="RecordDoesNotExist" xml:space="preserve">
     <value>The record does not exist.</value>
   </data>
+  <data name="RecordingAlreadyExists" xml:space="preserve">
+    <value>The recording already exists.</value>
+  </data>
   <data name="RecordingDoesNotExist" xml:space="preserve">
     <value>The recording does not eixst.</value>
   </data>

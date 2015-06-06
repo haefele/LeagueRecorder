@@ -3,7 +3,6 @@ namespace LeagueRecorder.Worker.Recorder
     public enum GameRecorderState
     {
         Running,
-        Cancelled,
         Finished,
         Error
     }
