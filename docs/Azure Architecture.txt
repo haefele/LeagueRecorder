@@ -1,6 +1,5 @@
 FRONTEND:
 - Api
-- Riot Api
 
 BACKEND:
 - SummonerInGameFinder
