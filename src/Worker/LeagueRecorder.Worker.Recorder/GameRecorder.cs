@@ -8,7 +8,7 @@ using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.GameData;
 using LeagueRecorder.Shared.Abstractions.League;
 using LeagueRecorder.Shared.Abstractions.Recordings;
-using LeagueRecorder.Shared.Abstractions.Records;
+using LeagueRecorder.Shared.Abstractions.Replays;
 using LeagueRecorder.Shared.Abstractions.Results;
 using LiteGuard;
 
@@ -25,7 +25,7 @@ namespace LeagueRecorder.Worker.Recorder
         private readonly ILeagueSpectatorApiClient _leagueSpectatorApiClient;
         private readonly IRecordingStorage _recordingStorage;
         private readonly IGameDataStorage _gameDataStorage;
-        private readonly IRecordStorage _recordStorage;
+        private readonly IReplayStorage _replayStorage;
         private readonly IConfig _config;
 
         private readonly Timer _timer;
@@ -54,16 +54,16 @@ namespace LeagueRecorder.Worker.Recorder
         /// <param name="leagueSpectatorApiClient">The league spectator API client.</param>
         /// <param name="recordingStorage">The recording storage.</param>
         /// <param name="gameDataStorage">The game data storage.</param>
-        /// <param name="recordStorage">The record storage.</param>
+        /// <param name="replayStorage">The record storage.</param>
         /// <param name="config">The configuration.</param>
-        public GameRecorder([NotNull]RecordingRequest recording, [NotNull]ILeagueApiClient leagueApiClient, [NotNull]ILeagueSpectatorApiClient leagueSpectatorApiClient, [NotNull]IRecordingStorage recordingStorage, [NotNull]IGameDataStorage gameDataStorage, [NotNull]IRecordStorage recordStorage, [NotNull]IConfig config)
+        public GameRecorder([NotNull]RecordingRequest recording, [NotNull]ILeagueApiClient leagueApiClient, [NotNull]ILeagueSpectatorApiClient leagueSpectatorApiClient, [NotNull]IRecordingStorage recordingStorage, [NotNull]IGameDataStorage gameDataStorage, [NotNull]IReplayStorage replayStorage, [NotNull]IConfig config)
         {
             Guard.AgainstNullArgument("recording", recording);
             Guard.AgainstNullArgument("leagueApiClient", leagueApiClient);
             Guard.AgainstNullArgument("leagueSpectatorApiClient", leagueSpectatorApiClient);
             Guard.AgainstNullArgument("recordingStorage", recordingStorage);
             Guard.AgainstNullArgument("gameDataStorage", gameDataStorage);
-            Guard.AgainstNullArgument("recordStorage", recordStorage);
+            Guard.AgainstNullArgument("ReplayStorage", replayStorage);
             Guard.AgainstNullArgument("config", config);
 
             this._recording = recording;
@@ -71,7 +71,7 @@ namespace LeagueRecorder.Worker.Recorder
             this._leagueSpectatorApiClient = leagueSpectatorApiClient;
             this._recordingStorage = recordingStorage;
             this._gameDataStorage = gameDataStorage;
-            this._recordStorage = recordStorage;
+            this._replayStorage = replayStorage;
             this._config = config;
             
             this._timer = new Timer();
@@ -131,7 +131,7 @@ namespace LeagueRecorder.Worker.Recorder
                     {
                         LogTo.Info("The recording {0} {1} has finished. Yeah!", this.RecordingRequest.Region, this.RecordingRequest.GameId);
 
-                        await this.SaveRecordAsync(recordingResult.Data);
+                        await this.SaveReplayAsync(recordingResult.Data);
                         await this._recordingStorage.DeleteRecordingAsync(recordingResult.Data.GameId, recordingResult.Data.Region);
 
                         this.TrySetState(GameRecorderState.Finished);
@@ -319,9 +319,9 @@ namespace LeagueRecorder.Worker.Recorder
             }
         }
         
-        private async Task SaveRecordAsync(Recording recording)
+        private async Task SaveReplayAsync(Recording recording)
         {
-            var record = new Record
+            var record = new Replay
             {
                 GameId = recording.GameId,
                 Region = recording.Region,
@@ -349,7 +349,7 @@ namespace LeagueRecorder.Worker.Recorder
                 }
             };
 
-            var saveResult = await this._recordStorage.SaveRecordAsync(record);
+            var saveResult = await this._replayStorage.SaveReplayAsync(record);
 
             if (saveResult.IsError)
             {

@@ -12,5 +12,8 @@
         int RecordingMaxErrorCount { get; }
         string Url { get; }
         bool CompressResponses { get; }
+        string SqlServerConnectionString { get; }
+        string AzureStorageConnectionString { get; }
+        bool RecordGames { get; }
     }
 }

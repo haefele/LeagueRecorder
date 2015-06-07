@@ -110,9 +110,9 @@
     <Compile Include="Recordings\RecordingQueue.cs" />
     <Compile Include="Recordings\RecordingStorage.cs" />
     <Compile Include="Recordings\RecordingTable.cs" />
-    <Compile Include="Records\RecordEntity.cs" />
-    <Compile Include="Records\RecordEntityMaps.cs" />
-    <Compile Include="Records\RecordStorage.cs" />
+    <Compile Include="Replays\ReplayEntity.cs" />
+    <Compile Include="Replays\ReplayEntityMaps.cs" />
+    <Compile Include="Replays\ReplayStorage.cs" />
     <Compile Include="Summoners\SummonerEntity.cs" />
     <Compile Include="Summoners\SummonerEntityMaps.cs" />
     <Compile Include="Summoners\SummonerStorage.cs" />

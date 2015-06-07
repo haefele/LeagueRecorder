@@ -11,12 +11,12 @@ using FluentNHibernate.Cfg.Db;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.GameData;
 using LeagueRecorder.Shared.Abstractions.League;
-using LeagueRecorder.Shared.Abstractions.Records;
+using LeagueRecorder.Shared.Abstractions.Replays;
 using LeagueRecorder.Shared.Abstractions.Summoners;
 using LeagueRecorder.Shared.Implementations.GameData;
 using LeagueRecorder.Shared.Implementations.League;
 using LeagueRecorder.Shared.Implementations.Recordings;
-using LeagueRecorder.Shared.Implementations.Records;
+using LeagueRecorder.Shared.Implementations.Replays;
 using LeagueRecorder.Shared.Implementations.Summoners;
 using LeagueRecorder.Worker.Api;
 using LeagueRecorder.Worker.Api.Controllers;
@@ -43,14 +43,14 @@ namespace LeagueRecorder.Tests.Console
             var apiClient = new LeagueApiClient(config);
             var spectatorApiClient = new LeagueSpectatorApiClient();
             var summonerStorage = new SummonerStorage(sessionFactory, config);
-            var recordStorage = new RecordStorage(sessionFactory);
+            var recordStorage = new ReplayStorage(sessionFactory);
             var recordingQueue = new RecordingQueue(cloudStorageAccount.CreateCloudQueueClient(), config);
             var recordingStorage = new RecordingStorage(cloudStorageAccount.CreateCloudTableClient(), config);
             var gameDataStorage = new GameDataStorage(cloudStorageAccount.CreateCloudBlobClient(), config);
 
             var container = new WindsorContainer();
             container.Register(
-                Component.For<IRecordStorage>().Instance(recordStorage).LifestyleSingleton(),
+                Component.For<IReplayStorage>().Instance(recordStorage).LifestyleSingleton(),
                 Component.For<ISummonerStorage>().Instance(summonerStorage).LifestyleSingleton(),
                 Component.For<ILeagueApiClient>().Instance(apiClient).LifestyleSingleton(),
                 Component.For<IGameDataStorage>().Instance(gameDataStorage).LifestyleSingleton());

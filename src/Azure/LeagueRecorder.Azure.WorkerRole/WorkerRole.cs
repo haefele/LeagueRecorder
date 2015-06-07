@@ -5,6 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.Windsor;
+using Castle.Windsor.Installer;
+using LeagueRecorder.Worker.Api;
+using LeagueRecorder.Worker.Recorder;
+using LeagueRecorder.Worker.SummonerInGameFinder;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
@@ -14,58 +19,45 @@ namespace LeagueRecorder.Azure.WorkerRole
 {
     public class WorkerRole : RoleEntryPoint
     {
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
+        private CancellationTokenSource _cancellationTokenSource;
 
-        public override void Run()
-        {
-            Trace.TraceInformation("LeagueRecorder.Azure.WorkerRole is running");
-
-            try
-            {
-                this.RunAsync(this.cancellationTokenSource.Token).Wait();
-            }
-            finally
-            {
-                this.runCompleteEvent.Set();
-            }
-        }
+        private SummonerInGameFinderWorker _summonerInGameFinderWorker;
+        private RecorderWorker _recorderWorker;
+        private ApiWorker _apiWorker;
 
         public override bool OnStart()
         {
             // Set the maximum number of concurrent connections
-            ServicePointManager.DefaultConnectionLimit = 12;
+            ServicePointManager.DefaultConnectionLimit = 256;
 
-            // For information on handling configuration changes
-            // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
+            var container = new WindsorContainer();
+            container.Install(FromAssembly.This());
 
-            bool result = base.OnStart();
+            this._cancellationTokenSource = new CancellationTokenSource();
 
-            Trace.TraceInformation("LeagueRecorder.Azure.WorkerRole has been started");
+            this._summonerInGameFinderWorker = container.Resolve<SummonerInGameFinderWorker>();
+            this._recorderWorker = container.Resolve<RecorderWorker>();
+            this._apiWorker = container.Resolve<ApiWorker>();
 
-            return result;
+            Task.WaitAll(
+                this._summonerInGameFinderWorker.StartAsync(),
+                this._recorderWorker.StartAsync(),
+                this._apiWorker.StartAsync());
+
+            return true;
         }
 
         public override void OnStop()
         {
-            Trace.TraceInformation("LeagueRecorder.Azure.WorkerRole is stopping");
-
-            this.cancellationTokenSource.Cancel();
-            this.runCompleteEvent.WaitOne();
-
-            base.OnStop();
-
-            Trace.TraceInformation("LeagueRecorder.Azure.WorkerRole has stopped");
+            this._cancellationTokenSource.Cancel();
         }
 
-        private async Task RunAsync(CancellationToken cancellationToken)
+        public override void Run()
         {
-            // TODO: Replace the following with your own logic.
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                Trace.TraceInformation("Working");
-                await Task.Delay(1000);
-            }
+            Task.WaitAll(
+                this._summonerInGameFinderWorker.RunAsync(this._cancellationTokenSource.Token),
+                this._recorderWorker.RunAsync(this._cancellationTokenSource.Token),
+                this._apiWorker.RunAsync(this._cancellationTokenSource.Token));
         }
     }
 }

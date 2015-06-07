@@ -3,7 +3,18 @@
   <Role name="LeagueRecorder.Azure.WorkerRole">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="GameDataContainerName" value="replays" />
+      <Setting name="RecordingTableName" value="recordings" />
+      <Setting name="RecordingQueueName" value="recordings" />
+      <Setting name="CountOfSummonersToCheckIfIngameAtOnce" value="50" />
+      <Setting name="RiotApiKey" value="" />
+      <Setting name="IntervalToCheckIfOneSummonerIsIngame" value="300" />
+      <Setting name="IntervalToCheckIfSummonersAreIngame" value="5" />
+      <Setting name="RecordingMaxErrorCount" value="10" />
+      <Setting name="CompressResponses" value="true" />
+      <Setting name="SqlServerConnectionString" value="" />
+      <Setting name="AzureStorageConnectionString" value="" />
+      <Setting name="RecordGames" value="false" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

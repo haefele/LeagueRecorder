@@ -47,17 +47,20 @@ namespace LeagueRecorder.Worker.SummonerInGameFinder
         {
             while (token.IsCancellationRequested == false)
             {
-                Region[] availableRegions = this.GetAvailableRegions();
-                Result<IList<Summoner>> summonersToCheck = await this._summonerStorage.GetSummonersForInGameCheckAsync(availableRegions);
-
-                if (summonersToCheck.IsError)
-                { 
-                    LogTo.Debug("Error while retrieving the summoners to check if they are ingame: {0}", summonersToCheck.Message);
-                }
-                else
+                if (this._config.RecordGames)
                 {
-                    var tasks = summonersToCheck.Data.Select(this.CheckIfSummonerIsIngameAsync);
-                    await Task.WhenAll(tasks);
+                    Region[] availableRegions = this.GetAvailableRegions();
+                    Result<IList<Summoner>> summonersToCheck = await this._summonerStorage.GetSummonersForInGameCheckAsync(availableRegions);
+
+                    if (summonersToCheck.IsError)
+                    { 
+                        LogTo.Debug("Error while retrieving the summoners to check if they are ingame: {0}", summonersToCheck.Message);
+                    }
+                    else
+                    {
+                        var tasks = summonersToCheck.Data.Select(this.CheckIfSummonerIsIngameAsync);
+                        await Task.WhenAll(tasks);
+                    }
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(this._config.IntervalToCheckIfSummonersAreIngame));

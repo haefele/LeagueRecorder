@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.GameData;
 using LeagueRecorder.Shared.Abstractions.Recordings;
-using LeagueRecorder.Shared.Abstractions.Records;
+using LeagueRecorder.Shared.Abstractions.Replays;
 using LeagueRecorder.Shared.Abstractions.Results;
 using LeagueRecorder.Worker.Api.Extensions;
 using LiteGuard;
@@ -20,15 +20,15 @@ namespace LeagueRecorder.Worker.Api.Controllers
 {
     public class RiotApiController : BaseController
     {
-        private readonly IRecordStorage _recordingStorage;
+        private readonly IReplayStorage _replayStorage;
         private readonly IGameDataStorage _gameDataStorage;
 
-        public RiotApiController([NotNull]IRecordStorage recordingStorage, [NotNull]IGameDataStorage gameDataStorage)
+        public RiotApiController([NotNull]IReplayStorage replayStorage, [NotNull]IGameDataStorage gameDataStorage)
         {
-            Guard.AgainstNullArgument("RecordingStorage", recordingStorage);
+            Guard.AgainstNullArgument("replayStorage", replayStorage);
             Guard.AgainstNullArgument("gameDataStorage", gameDataStorage);
 
-            this._recordingStorage = recordingStorage;
+            this._replayStorage = replayStorage;
             this._gameDataStorage = gameDataStorage;
         }
 
@@ -48,7 +48,7 @@ namespace LeagueRecorder.Worker.Api.Controllers
         {
             var region = Region.FromString(spectatorRegionId);
 
-            Result<Record> recordingResult = await this._recordingStorage.GetRecordAsync(gameId, region);
+            Result<Replay> recordingResult = await this._replayStorage.GetReplayAsync(gameId, region);
 
             if (recordingResult.IsError)
                 return this.Request.GetMessage(HttpStatusCode.NotFound);
@@ -101,7 +101,7 @@ namespace LeagueRecorder.Worker.Api.Controllers
         {
             var region = Region.FromString(spectatorRegionId);
 
-            Result<Record> recordingResult = await this._recordingStorage.GetRecordAsync(gameId, region);
+            Result<Replay> recordingResult = await this._replayStorage.GetReplayAsync(gameId, region);
 
             if (recordingResult.IsError)
                 return this.Request.GetMessage(HttpStatusCode.NotFound);
@@ -143,7 +143,7 @@ namespace LeagueRecorder.Worker.Api.Controllers
         {
             var region = Region.FromString(spectatorRegionId);
 
-            Result<Record> recordingResult = await this._recordingStorage.GetRecordAsync(gameId, region);
+            Result<Replay> recordingResult = await this._replayStorage.GetReplayAsync(gameId, region);
 
             if (recordingResult.IsError)
                 return this.Request.GetMessage(HttpStatusCode.NotFound);
@@ -165,7 +165,7 @@ namespace LeagueRecorder.Worker.Api.Controllers
         {
             var region = Region.FromString(spectatorRegionId);
 
-            Result<Record> recordingResult = await this._recordingStorage.GetRecordAsync(gameId, region);
+            Result<Replay> recordingResult = await this._replayStorage.GetReplayAsync(gameId, region);
 
             if (recordingResult.IsError)
                 return this.Request.GetMessage(HttpStatusCode.NotFound);
@@ -184,7 +184,7 @@ namespace LeagueRecorder.Worker.Api.Controllers
         #region Private Methods
         private static readonly Dictionary<Tuple<Region, long, string>, int> _clientsThatNeedStartupChunkInfo = new Dictionary<Tuple<Region, long, string>, int>();
 
-        private void RememberToReturnStartupChunkInfo(HttpRequestMessage request, Record recording)
+        private void RememberToReturnStartupChunkInfo(HttpRequestMessage request, Replay recording)
         {
             var clientIp = request.GetOwinContext().Request.RemoteIpAddress;
             var client = Tuple.Create(recording.Region, recording.GameId, clientIp);
@@ -192,7 +192,7 @@ namespace LeagueRecorder.Worker.Api.Controllers
             _clientsThatNeedStartupChunkInfo[client] = 0;
         }
 
-        private bool ShouldReturnStartupChunkInfo(HttpRequestMessage request, Record recording)
+        private bool ShouldReturnStartupChunkInfo(HttpRequestMessage request, Replay recording)
         {
             var clientIp = request.GetOwinContext().Request.RemoteIpAddress;
             var client = Tuple.Create(recording.Region, recording.GameId, clientIp);

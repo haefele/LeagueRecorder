@@ -66,10 +66,10 @@
     <Compile Include="Recordings\IRecordingStorage.cs" />
     <Compile Include="Recordings\Recording.cs" />
     <Compile Include="Recordings\RecordingRequest.cs" />
-    <Compile Include="Records\GameInformation.cs" />
-    <Compile Include="Records\IRecordStorage.cs" />
-    <Compile Include="Records\Record.cs" />
-    <Compile Include="Records\ReplayInformation.cs" />
+    <Compile Include="Replays\GameInformation.cs" />
+    <Compile Include="Replays\IReplayStorage.cs" />
+    <Compile Include="Replays\Replay.cs" />
+    <Compile Include="Replays\ReplayInformation.cs" />
     <Compile Include="Region.cs" />
     <Compile Include="Results\Result.cs" />
     <Compile Include="Results\ResultException.cs" />

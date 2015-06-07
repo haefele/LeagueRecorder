@@ -1,13 +1,13 @@
 ﻿using FluentNHibernate.Mapping;
 using LeagueRecorder.Shared.Implementations.Extensions;
 
-namespace LeagueRecorder.Shared.Implementations.Records
+namespace LeagueRecorder.Shared.Implementations.Replays
 {
-    public class RecordEntityMaps : ClassMap<RecordEntity>
+    public class ReplayEntityMaps : ClassMap<ReplayEntity>
     {
-        public RecordEntityMaps()
+        public ReplayEntityMaps()
         {
-            Table("Records");
+            Table("Replays");
 
             Id(f => f.Id).GeneratedBy.Assigned();
 

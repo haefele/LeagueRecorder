@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace LeagueRecorder.Shared.Abstractions.Records
+namespace LeagueRecorder.Shared.Abstractions.Replays
 {
-    public class Record
+    public class Replay
     {
         public long GameId { get; set; }
         public Region Region { get; set; }

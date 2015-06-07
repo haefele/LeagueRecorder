@@ -1,8 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceDefinition name="AzureCloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
-  <WorkerRole name="LeagueRecorder.Azure.WorkerRole" vmsize="Small">
+  <WorkerRole name="LeagueRecorder.Azure.WorkerRole" vmsize="ExtraSmall">
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="GameDataContainerName" />
+      <Setting name="RecordingTableName" />
+      <Setting name="RecordingQueueName" />
+      <Setting name="CountOfSummonersToCheckIfIngameAtOnce" />
+      <Setting name="RiotApiKey" />
+      <Setting name="IntervalToCheckIfOneSummonerIsIngame" />
+      <Setting name="IntervalToCheckIfSummonersAreIngame" />
+      <Setting name="RecordingMaxErrorCount" />
+      <Setting name="CompressResponses" />
+      <Setting name="SqlServerConnectionString" />
+      <Setting name="AzureStorageConnectionString" />
+      <Setting name="RecordGames" />
     </ConfigurationSettings>
+    <Endpoints>
+      <InputEndpoint name="HTTP" protocol="http" port="80" localPort="80" />
+    </Endpoints>
   </WorkerRole>
 </ServiceDefinition>

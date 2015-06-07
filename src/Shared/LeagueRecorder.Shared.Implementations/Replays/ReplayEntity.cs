@@ -1,10 +1,10 @@
 ﻿using System;
 using LeagueRecorder.Shared.Abstractions;
-using LeagueRecorder.Shared.Abstractions.Records;
+using LeagueRecorder.Shared.Abstractions.Replays;
 
-namespace LeagueRecorder.Shared.Implementations.Records
+namespace LeagueRecorder.Shared.Implementations.Replays
 {
-    public class RecordEntity
+    public class ReplayEntity
     {
         public virtual string Id { get; set; }
 
@@ -38,9 +38,9 @@ namespace LeagueRecorder.Shared.Implementations.Records
             return string.Format("{0}/{1}", region, gameId);
         }
 
-        public virtual Record AsRecord()
+        public virtual Replay AsReplay()
         {
-            return new Record
+            return new Replay
             {
                 GameId = this.GameId,
                 Region = Abstractions.Region.FromString(this.Region),
@@ -69,29 +69,29 @@ namespace LeagueRecorder.Shared.Implementations.Records
             };
         }
 
-        public static RecordEntity FromRecord(Record record)
+        public static ReplayEntity FromReplay(Replay replay)
         {
-            return new RecordEntity
+            return new ReplayEntity
             {
-                Id = ToId(record.GameId, record.Region),
-                GameId = record.GameId,
-                Region = record.Region.ToString(),
-                LeagueVersion = record.LeagueVersion.ToString(),
-                SpectatorVersion = record.SpectatorVersion.ToString(),
-                StartTime = record.GameInformation.StartTime,
-                EndTime = record.GameInformation.EndTime,
-                InterestScore = record.GameInformation.InterestScore,
-                GameLength = record.GameInformation.GameLength,
-                EncryptionKey = record.ReplayInformation.EncryptionKey,
-                CreateTime = record.ReplayInformation.CreateTime,
-                EndStartupChunkId = record.ReplayInformation.EndStartupChunkId,
-                StartGameChunkId = record.ReplayInformation.StartGameChunkId,
-                EndGameChunkId = record.ReplayInformation.EndGameChunkId,
-                EndGameKeyFrameId = record.ReplayInformation.EndGameKeyFrameId,
-                ChunkTimeInterval = record.ReplayInformation.ChunkTimeInterval,
-                KeyFrameTimeInterval = record.ReplayInformation.KeyFrameTimeInterval,
-                ClientAddedLag = record.ReplayInformation.ClientAddedLag,
-                DelayTime = record.ReplayInformation.DelayTime
+                Id = ToId(replay.GameId, replay.Region),
+                GameId = replay.GameId,
+                Region = replay.Region.ToString(),
+                LeagueVersion = replay.LeagueVersion.ToString(),
+                SpectatorVersion = replay.SpectatorVersion.ToString(),
+                StartTime = replay.GameInformation.StartTime,
+                EndTime = replay.GameInformation.EndTime,
+                InterestScore = replay.GameInformation.InterestScore,
+                GameLength = replay.GameInformation.GameLength,
+                EncryptionKey = replay.ReplayInformation.EncryptionKey,
+                CreateTime = replay.ReplayInformation.CreateTime,
+                EndStartupChunkId = replay.ReplayInformation.EndStartupChunkId,
+                StartGameChunkId = replay.ReplayInformation.StartGameChunkId,
+                EndGameChunkId = replay.ReplayInformation.EndGameChunkId,
+                EndGameKeyFrameId = replay.ReplayInformation.EndGameKeyFrameId,
+                ChunkTimeInterval = replay.ReplayInformation.ChunkTimeInterval,
+                KeyFrameTimeInterval = replay.ReplayInformation.KeyFrameTimeInterval,
+                ClientAddedLag = replay.ReplayInformation.ClientAddedLag,
+                DelayTime = replay.ReplayInformation.DelayTime
             };
         }
     }

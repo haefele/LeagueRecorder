@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeagueRecorder.Shared.Abstractions.Records
+namespace LeagueRecorder.Shared.Abstractions.Replays
 {
     public class ReplayInformation
     {
