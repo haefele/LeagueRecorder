@@ -53,7 +53,7 @@ namespace LeagueRecorder.Worker.SummonerInGameFinder
                     Result<IList<Summoner>> summonersToCheck = await this._summonerStorage.GetSummonersForInGameCheckAsync(availableRegions);
 
                     if (summonersToCheck.IsError)
-                    { 
+                    {
                         LogTo.Debug("Error while retrieving the summoners to check if they are ingame: {0}", summonersToCheck.Message);
                     }
                     else
@@ -61,6 +61,10 @@ namespace LeagueRecorder.Worker.SummonerInGameFinder
                         var tasks = summonersToCheck.Data.Select(this.CheckIfSummonerIsIngameAsync);
                         await Task.WhenAll(tasks);
                     }
+                }
+                else
+                {
+                    LogTo.Debug("Not searching for new games because the setting 'RecordGames' is turned off.");
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(this._config.IntervalToCheckIfSummonersAreIngame));
