@@ -4,15 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using LeagueRecorder.Shared.Abstractions;
+using LeagueRecorder.Shared.Abstractions.GameData;
+using LeagueRecorder.Shared.Abstractions.League;
+using LeagueRecorder.Shared.Abstractions.Records;
 using LeagueRecorder.Shared.Abstractions.Summoners;
 using LeagueRecorder.Shared.Implementations.GameData;
 using LeagueRecorder.Shared.Implementations.League;
 using LeagueRecorder.Shared.Implementations.Recordings;
 using LeagueRecorder.Shared.Implementations.Records;
 using LeagueRecorder.Shared.Implementations.Summoners;
+using LeagueRecorder.Worker.Api;
+using LeagueRecorder.Worker.Api.Controllers;
 using LeagueRecorder.Worker.SummonerInGameFinder;
 using Microsoft.WindowsAzure.Storage;
 using NHibernate.Tool.hbm2ddl;
@@ -40,24 +47,40 @@ namespace LeagueRecorder.Tests.Console
             var recordingQueue = new RecordingQueue(cloudStorageAccount.CreateCloudQueueClient(), config);
             var recordingStorage = new RecordingStorage(cloudStorageAccount.CreateCloudTableClient(), config);
             var gameDataStorage = new GameDataStorage(cloudStorageAccount.CreateCloudBlobClient(), config);
-            
+
+            var container = new WindsorContainer();
+            container.Register(
+                Component.For<IRecordStorage>().Instance(recordStorage).LifestyleSingleton(),
+                Component.For<ISummonerStorage>().Instance(summonerStorage).LifestyleSingleton(),
+                Component.For<ILeagueApiClient>().Instance(apiClient).LifestyleSingleton(),
+                Component.For<IGameDataStorage>().Instance(gameDataStorage).LifestyleSingleton());
+            container.Register(Classes
+                .FromAssemblyContaining<BaseController>()
+                .BasedOn<BaseController>()
+                .WithServiceSelf()
+                .LifestyleScoped());
+
             var finder = new SummonerInGameFinderWorker(apiClient, summonerStorage, recordingQueue, recordingStorage, config);
             finder.StartAsync().Wait();
 
             var recorder = new RecorderWorker(recordingQueue, apiClient, spectatorApiClient, recordingStorage, gameDataStorage, recordStorage, config);
             recorder.StartAsync().Wait();
-                        
+
+            var api = new ApiWorker(container, config);
+            api.StartAsync().Wait();
+
             var tokenSource = new CancellationTokenSource();
             
             var task1 = finder.RunAsync(tokenSource.Token);
             var task2 = recorder.RunAsync(tokenSource.Token);
+            var task3 = recorder.RunAsync(tokenSource.Token);
 
             System.Console.ReadLine();
             System.Console.WriteLine("Stopping");
 
             tokenSource.Cancel();
 
-            Task.WaitAll(task1, task2);
+            Task.WaitAll(task1, task2, task3);
         }
     }
 
@@ -101,6 +124,16 @@ namespace LeagueRecorder.Tests.Console
         public int RecordingMaxErrorCount
         {
             get { return 10; }
+        }
+
+        public string Url
+        {
+            get { return "http://localhost/"; }
+        }
+
+        public bool CompressResponses
+        {
+            get { return true; }
         }
     }
 }

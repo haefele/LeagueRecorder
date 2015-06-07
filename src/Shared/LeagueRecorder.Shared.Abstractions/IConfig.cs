@@ -10,5 +10,7 @@
         int IntervalToCheckIfOneSummonerIsIngame { get; }
         int IntervalToCheckIfSummonersAreIngame { get; }
         int RecordingMaxErrorCount { get; }
+        string Url { get; }
+        bool CompressResponses { get; }
     }
 }
