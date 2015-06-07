@@ -16,7 +16,5 @@
       <Setting name="AzureStorageConnectionString" value="" />
       <Setting name="RecordGames" value="false" />
     </ConfigurationSettings>
-    <Certificates>
-    </Certificates>
   </Role>
 </ServiceConfiguration>
