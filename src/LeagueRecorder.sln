@@ -23,6 +23,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{AA1A01BB-0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueRecorder.Tests.Console", "Tests\LeagueRecorder.Tests.Console\LeagueRecorder.Tests.Console.csproj", "{07712EDE-CF73-4037-942B-828C755F1B24}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure", "Azure", "{2C3792C4-45AD-46CF-A0C8-51196A4EA890}"
+EndProject
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "AzureCloudService", "Azure\AzureCloudService\AzureCloudService.ccproj", "{DFA6385E-442D-4A99-81D5-6B38319943DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueRecorder.Azure.WorkerRole", "Azure\LeagueRecorder.Azure.WorkerRole\LeagueRecorder.Azure.WorkerRole.csproj", "{31671BD2-D12B-4FC7-8EEF-CAE4D4367E6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +63,14 @@ Global
 		{07712EDE-CF73-4037-942B-828C755F1B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07712EDE-CF73-4037-942B-828C755F1B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07712EDE-CF73-4037-942B-828C755F1B24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFA6385E-442D-4A99-81D5-6B38319943DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFA6385E-442D-4A99-81D5-6B38319943DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFA6385E-442D-4A99-81D5-6B38319943DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFA6385E-442D-4A99-81D5-6B38319943DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31671BD2-D12B-4FC7-8EEF-CAE4D4367E6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31671BD2-D12B-4FC7-8EEF-CAE4D4367E6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31671BD2-D12B-4FC7-8EEF-CAE4D4367E6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31671BD2-D12B-4FC7-8EEF-CAE4D4367E6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,5 +83,7 @@ Global
 		{B19BBD61-127E-434E-9D27-0191549BF3F1} = {2BB47204-076E-49A0-B3A8-D9861714BCA8}
 		{391C019F-EA90-42E9-9FA1-B6B145F8E60D} = {2BB47204-076E-49A0-B3A8-D9861714BCA8}
 		{07712EDE-CF73-4037-942B-828C755F1B24} = {AA1A01BB-0E42-40B7-9BD3-A08E0A15E5E5}
+		{DFA6385E-442D-4A99-81D5-6B38319943DD} = {2C3792C4-45AD-46CF-A0C8-51196A4EA890}
+		{31671BD2-D12B-4FC7-8EEF-CAE4D4367E6A} = {2C3792C4-45AD-46CF-A0C8-51196A4EA890}
 	EndGlobalSection
 EndGlobal
