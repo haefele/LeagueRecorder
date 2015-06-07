@@ -15,14 +15,8 @@
       <Setting name="SqlServerConnectionString" value="" />
       <Setting name="AzureStorageConnectionString" value="" />
       <Setting name="RecordGames" value="false" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="leaguerecorder" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBvQYJKoZIhvcNAQcDoIIBrjCCAaoCAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEBESdM3+D6GCS5OBESDh3NcwDQYJKoZIhvcNAQEBBQAEggEAy//MDq0+73rQJKUvXAoaIk9L65fK70OVk9iuEkUBgmxbdw11Ssw5jBpxZvUIzjNqxTAKr2tgt2ZtdoBQgvV+4ZDeD4EHGZm2VL7S2pXdSoCjpOP1f1puTC+dZLVVFJVGm9brtDtJw5CN8Qy+zhRkAqD/GmOsDBkdwtM2Es1pHvCtlUVMfyU9BUFJN8UhQfvHYTgVl7ragME/SnnMoOFA/QlagZ7TvhoRLEYmmprLeau/XxupaOOTWMe/xjOamJ3bB1bl/wbbDeCMAFKm56dM0MmhtQvSvScJB6L0K38St6Hy18h7zXQawDdJDbfd6OnjDIazVKb9ziLeoMJem4vPLDBTBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECASYFp0urhFygDAb2xRnmxNFf3ciAbiR/3f6Mwrww2Jg472hhGmGiy3MQxdTnCK56aFFmFSoxQ4hSzY=" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2016-06-07T23:59:59.0000000+02:00" />
-      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="473E9494EA05AFBA33140DFE2BCAC86F299BDBF0" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
 </ServiceConfiguration>

@@ -18,9 +18,5 @@
     <Endpoints>
       <InputEndpoint name="HTTP" protocol="http" port="80" localPort="80" />
     </Endpoints>
-    <Imports>
-      <Import moduleName="RemoteAccess" />
-      <Import moduleName="RemoteForwarder" />
-    </Imports>
   </WorkerRole>
 </ServiceDefinition>
