@@ -37,6 +37,7 @@ namespace LeagueRecorder.Shared.Implementations.Replays
             Map(f => f.DelayTime).Not.Nullable();
 
             HasMany(f => f.Participants)
+                .KeyColumn("ReplayId")
                 .Not.Inverse()
                 .Not.KeyNullable()
                 .Not.KeyUpdate()
