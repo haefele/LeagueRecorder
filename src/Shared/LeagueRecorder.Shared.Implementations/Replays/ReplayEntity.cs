@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.Replays;
 
@@ -33,6 +35,8 @@ namespace LeagueRecorder.Shared.Implementations.Replays
         public virtual TimeSpan ClientAddedLag { get; set; }
         public virtual TimeSpan DelayTime { get; set; }
 
+        public virtual IList<ReplayGameParticipantEntity> Participants { get; set; }
+
         public static string ToId(long gameId, Region region)
         {
             return string.Format("{0}/{1}", region, gameId);
@@ -65,7 +69,8 @@ namespace LeagueRecorder.Shared.Implementations.Replays
                     KeyFrameTimeInterval = this.KeyFrameTimeInterval,
                     ClientAddedLag = this.ClientAddedLag,
                     DelayTime = this.DelayTime
-                }
+                },
+                Participants = this.Participants.Select(f => new ReplayGameParticipant { SummonerId = f.SummonerId, ChampionId = f.ChampionId}).ToList()
             };
         }
 
@@ -91,7 +96,8 @@ namespace LeagueRecorder.Shared.Implementations.Replays
                 ChunkTimeInterval = replay.ReplayInformation.ChunkTimeInterval,
                 KeyFrameTimeInterval = replay.ReplayInformation.KeyFrameTimeInterval,
                 ClientAddedLag = replay.ReplayInformation.ClientAddedLag,
-                DelayTime = replay.ReplayInformation.DelayTime
+                DelayTime = replay.ReplayInformation.DelayTime,
+                Participants = replay.Participants.Select(f => new ReplayGameParticipantEntity { SummonerId = f.SummonerId, ChampionId = f.ChampionId}).ToList()
             };
         }
     }

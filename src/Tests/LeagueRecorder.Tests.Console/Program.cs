@@ -22,6 +22,7 @@ using LeagueRecorder.Worker.Api;
 using LeagueRecorder.Worker.Api.Controllers;
 using LeagueRecorder.Worker.SummonerInGameFinder;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using NHibernate.Tool.hbm2ddl;
 using LeagueRecorder.Worker.Recorder;
 
@@ -36,8 +37,9 @@ namespace LeagueRecorder.Tests.Console
             var sessionFactory = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2012.ConnectionString(f => f.Is("")))
                 .Mappings(f => f.FluentMappings.AddFromAssemblyOf<SummonerEntity>())
+                .ExposeConfiguration(f => new SchemaUpdate(f).Execute(true, true))
                 .BuildSessionFactory();
-
+            
             var config = new InMemoryConfig();
 
             var apiClient = new LeagueApiClient(config);
@@ -48,39 +50,56 @@ namespace LeagueRecorder.Tests.Console
             var recordingStorage = new RecordingStorage(cloudStorageAccount.CreateCloudTableClient(), config);
             var gameDataStorage = new GameDataStorage(cloudStorageAccount.CreateCloudBlobClient(), config);
 
-            var container = new WindsorContainer();
-            container.Register(
-                Component.For<IReplayStorage>().Instance(recordStorage).LifestyleSingleton(),
-                Component.For<ISummonerStorage>().Instance(summonerStorage).LifestyleSingleton(),
-                Component.For<ILeagueApiClient>().Instance(apiClient).LifestyleSingleton(),
-                Component.For<IGameDataStorage>().Instance(gameDataStorage).LifestyleSingleton());
-            container.Register(Classes
-                .FromAssemblyContaining<BaseController>()
-                .BasedOn<BaseController>()
-                .WithServiceSelf()
-                .LifestyleScoped());
-
-            var finder = new SummonerInGameFinderWorker(apiClient, summonerStorage, recordingQueue, recordingStorage, config);
-            finder.StartAsync().Wait();
-
-            var recorder = new RecorderWorker(recordingQueue, apiClient, spectatorApiClient, recordingStorage, gameDataStorage, recordStorage, config);
-            recorder.StartAsync().Wait();
-
-            var api = new ApiWorker(container, config);
-            api.StartAsync().Wait();
-
-            var tokenSource = new CancellationTokenSource();
-            
-            var task1 = finder.RunAsync(tokenSource.Token);
-            var task2 = recorder.RunAsync(tokenSource.Token);
-            var task3 = recorder.RunAsync(tokenSource.Token);
-
-            System.Console.ReadLine();
-            System.Console.WriteLine("Stopping");
-
-            tokenSource.Cancel();
-
-            Task.WaitAll(task1, task2, task3);
+            var saveResult = recordStorage.SaveReplayAsync(new Replay
+            {
+                GameId = 123123123,
+                Region = Region.EuropeWest,
+                GameInformation = new GameInformation
+                {
+                    EndTime = DateTime.Now.AddMinutes(10),
+                    GameLength = TimeSpan.FromMinutes(10),
+                    InterestScore = 1000,
+                    StartTime = DateTime.Now,
+                },
+                LeagueVersion = new Version(5, 9, 1),
+                SpectatorVersion = new Version(1, 82, 89),
+                ReplayInformation = new ReplayInformation
+                {
+                    ChunkTimeInterval = TimeSpan.FromSeconds(30),
+                    ClientAddedLag = TimeSpan.FromSeconds(30),
+                    CreateTime = DateTime.Now.AddSeconds(-10),
+                    DelayTime = TimeSpan.FromSeconds(30),
+                    EncryptionKey = "123123123",
+                    EndGameChunkId = 12,
+                    EndGameKeyFrameId = 6,
+                    EndStartupChunkId = 2,
+                    KeyFrameTimeInterval = TimeSpan.FromSeconds(60),
+                    StartGameChunkId = 3
+                },
+                Participants = new []
+                {
+                    new ReplayGameParticipant
+                    {
+                        ChampionId = 1,
+                        SummonerId = 1
+                    },
+                    new ReplayGameParticipant
+                    {
+                        ChampionId = 2,
+                        SummonerId = 2
+                    },
+                    new ReplayGameParticipant
+                    {
+                        ChampionId = 3,
+                        SummonerId = 3
+                    },
+                    new ReplayGameParticipant
+                    {
+                        ChampionId = 4,
+                        SummonerId = 4
+                    },
+                }
+            }).Result;
         }
     }
 
@@ -132,6 +151,21 @@ namespace LeagueRecorder.Tests.Console
         }
 
         public bool CompressResponses
+        {
+            get { return true; }
+        }
+
+        public string SqlServerConnectionString
+        {
+            get { return string.Empty; }
+        }
+
+        public string AzureStorageConnectionString
+        {
+            get { return string.Empty; }
+        }
+
+        public bool RecordGames
         {
             get { return true; }
         }

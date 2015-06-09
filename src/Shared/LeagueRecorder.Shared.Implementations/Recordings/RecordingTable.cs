@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.Recordings;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 
 namespace LeagueRecorder.Shared.Implementations.Recordings
 {
@@ -40,6 +43,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
         public long? ClientAddedLag { get; set; }
         public long? DelayTime { get; set; }
         public int? InterestScore { get; set; }
+        public string ParticipantsJson { get; set; }
         #endregion
 
         public static string ToPartitionKey(Region region)
@@ -74,7 +78,8 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 KeyFrameTimeInterval = recording.KeyFrameTimeInterval.HasValue ? recording.KeyFrameTimeInterval.Value.Ticks : (long?)null,
                 ClientAddedLag = recording.ClientAddedLag.HasValue ? recording.ClientAddedLag.Value.Ticks : (long?)null,
                 DelayTime = recording.DelayTime.HasValue ? recording.DelayTime.Value.Ticks : (long?)null,
-                InterestScore = recording.InterestScore
+                InterestScore = recording.InterestScore,
+                ParticipantsJson = JsonConvert.SerializeObject(recording.Participants)
             };
         }
 
@@ -102,7 +107,8 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 KeyFrameTimeInterval = this.KeyFrameTimeInterval.HasValue ? TimeSpan.FromTicks(this.KeyFrameTimeInterval.Value) : (TimeSpan?)null,
                 ClientAddedLag = this.ClientAddedLag.HasValue ? TimeSpan.FromTicks(this.ClientAddedLag.Value) : (TimeSpan?)null,
                 DelayTime = this.DelayTime.HasValue ? TimeSpan.FromTicks(this.DelayTime.Value) : (TimeSpan?)null,
-                InterestScore = this.InterestScore
+                InterestScore = this.InterestScore,
+                Participants = JsonConvert.DeserializeObject<IList<RecordingGameParticipant>>(this.ParticipantsJson)
             };
         }
     }

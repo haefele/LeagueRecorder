@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace LeagueRecorder.Shared.Abstractions.League
 {
@@ -8,5 +10,6 @@ namespace LeagueRecorder.Shared.Abstractions.League
         public TimeSpan GameLength { get; set; }
         public string Region { get; set; }
         public string EncryptionKey { get; set; }
+        public IList<RiotGameParticipant> Participants { get; set; }
     }
 }

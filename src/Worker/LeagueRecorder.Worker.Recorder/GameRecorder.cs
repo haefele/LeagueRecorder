@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Anotar.NLog;
@@ -346,7 +347,8 @@ namespace LeagueRecorder.Worker.Recorder
                     EndStartupChunkId = recording.EndStartupChunkId.Value,
                     KeyFrameTimeInterval = recording.KeyFrameTimeInterval.Value,
                     StartGameChunkId = recording.StartGameChunkId.Value
-                }
+                },
+                Participants = recording.Participants.Select(f => new ReplayGameParticipant { ChampionId = f.ChampionId, SummonerId = f.SummonerId}).ToList()
             };
 
             var saveResult = await this._replayStorage.SaveReplayAsync(record);

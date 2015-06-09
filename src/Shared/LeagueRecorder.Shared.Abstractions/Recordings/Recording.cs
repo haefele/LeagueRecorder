@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LeagueRecorder.Shared.Abstractions.Recordings
 {
@@ -27,5 +28,7 @@ namespace LeagueRecorder.Shared.Abstractions.Recordings
         public TimeSpan? ClientAddedLag { get; set; }
         public TimeSpan? DelayTime { get; set; }
         public int? InterestScore { get; set; }
+
+        public IList<RecordingGameParticipant> Participants { get; set; }
     }
 }

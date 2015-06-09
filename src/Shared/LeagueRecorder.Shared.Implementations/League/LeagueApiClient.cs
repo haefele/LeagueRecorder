@@ -114,7 +114,15 @@ namespace LeagueRecorder.Shared.Implementations.League
                         GameId = responseJson.Value<long>("gameId"),
                         GameLength = TimeSpan.FromSeconds(responseJson.Value<int>("gameLength")),
                         Region = region.ToString(),
-                        EncryptionKey = responseJson.Value<JObject>("observers").Value<string>("encryptionKey")
+                        EncryptionKey = responseJson.Value<JObject>("observers").Value<string>("encryptionKey"),
+                        Participants = responseJson.Value<JArray>("participants")
+                            .OfType<JObject>()
+                            .Select(f => new RiotGameParticipant
+                                {
+                                    ChampionId = f.Value<long>("championId"),
+                                    SummonerId = f.Value<long>("summonerId")
+                                })
+                            .ToList()
                     };
 
                     return gameInfo;

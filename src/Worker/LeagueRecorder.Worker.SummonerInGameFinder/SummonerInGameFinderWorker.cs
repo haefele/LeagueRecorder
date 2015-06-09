@@ -100,7 +100,14 @@ namespace LeagueRecorder.Worker.SummonerInGameFinder
             {
                 GameId = currentGameResult.Data.GameId,
                 Region = summoner.Region,
-                EncryptionKey = currentGameResult.Data.EncryptionKey
+                EncryptionKey = currentGameResult.Data.EncryptionKey,
+                Participants = currentGameResult.Data.Participants
+                    .Select(f => new RecordingGameParticipant
+                        {
+                            ChampionId = f.ChampionId, 
+                            SummonerId = f.SummonerId
+                        })
+                    .ToList()
             };
 
             var saveResult = await this._recordingStorage.SaveNewRecordingAsync(recording);

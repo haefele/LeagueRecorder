@@ -49,7 +49,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             });
         }
 
-        public Task<Result> SaveNewRecordingAsync([NotNull] Recording recording)
+        public Task<Result> SaveNewRecordingAsync(Recording recording)
         {
             return Result.CreateAsync(async () =>
             {
@@ -94,33 +94,6 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             });
         }
         
-        public Task<Result<IList<Recording>>> GetFinishedRecordingsAsync()
-        {
-            return Result.CreateAsync(async () =>
-            {
-                CloudTable recordingTable = await this.GetRecordingTableAsync();
-
-                IList<Recording> result = new List<Recording>();
-                TableContinuationToken tableContinuationToken = null;
-
-                do
-                {
-                    var segment = await recordingTable
-                        .CreateQuery<RecordingTable>()
-                        .Where(f => f.HasFinished)
-                        .AsTableQuery()
-                        .ExecuteSegmentedAsync(tableContinuationToken);
-
-                    tableContinuationToken = segment.ContinuationToken;
-
-                    result.AddRange(segment.Results.Select(f => f.AsRecording()));
-
-                } while (tableContinuationToken != null);
-
-                return result;
-            });
-        }
-
         public Task<Result> DeleteRecordingAsync(long gameId, Region region)
         {
             return Result.CreateAsync(async () =>

@@ -35,6 +35,12 @@ namespace LeagueRecorder.Shared.Implementations.Replays
             Map(f => f.KeyFrameTimeInterval).Not.Nullable();
             Map(f => f.ClientAddedLag).Not.Nullable();
             Map(f => f.DelayTime).Not.Nullable();
+
+            HasMany(f => f.Participants)
+                .Not.Inverse()
+                .Not.KeyNullable()
+                .Not.KeyUpdate()
+                .Cascade.AllDeleteOrphan();
         }
     }
 }

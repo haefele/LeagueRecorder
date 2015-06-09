@@ -58,6 +58,7 @@
     <Compile Include="League\ILeagueSpectatorApiClient.cs" />
     <Compile Include="League\RiotChunk.cs" />
     <Compile Include="League\RiotGameMetaData.cs" />
+    <Compile Include="League\RiotGameParticipant.cs" />
     <Compile Include="League\RiotKeyFrame.cs" />
     <Compile Include="League\RiotLastGameInfo.cs" />
     <Compile Include="League\RiotSpectatorGameInfo.cs" />
@@ -65,10 +66,12 @@
     <Compile Include="Recordings\IRecordingQueue.cs" />
     <Compile Include="Recordings\IRecordingStorage.cs" />
     <Compile Include="Recordings\Recording.cs" />
+    <Compile Include="Recordings\RecordingGameParticipant.cs" />
     <Compile Include="Recordings\RecordingRequest.cs" />
     <Compile Include="Replays\GameInformation.cs" />
     <Compile Include="Replays\IReplayStorage.cs" />
     <Compile Include="Replays\Replay.cs" />
+    <Compile Include="Replays\ReplayGameParticipant.cs" />
     <Compile Include="Replays\ReplayInformation.cs" />
     <Compile Include="Region.cs" />
     <Compile Include="Results\Result.cs" />

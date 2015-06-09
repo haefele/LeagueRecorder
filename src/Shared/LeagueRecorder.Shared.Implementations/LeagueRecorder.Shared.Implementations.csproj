@@ -112,6 +112,8 @@
     <Compile Include="Recordings\RecordingTable.cs" />
     <Compile Include="Replays\ReplayEntity.cs" />
     <Compile Include="Replays\ReplayEntityMaps.cs" />
+    <Compile Include="Replays\ReplayGameParticipantEntity.cs" />
+    <Compile Include="Replays\ReplayGameParticipantEntityMaps.cs" />
     <Compile Include="Replays\ReplayStorage.cs" />
     <Compile Include="Summoners\SummonerEntity.cs" />
     <Compile Include="Summoners\SummonerEntityMaps.cs" />

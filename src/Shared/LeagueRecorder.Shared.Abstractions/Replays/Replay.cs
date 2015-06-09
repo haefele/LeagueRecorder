@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace LeagueRecorder.Shared.Abstractions.Replays
 {
@@ -12,5 +14,7 @@ namespace LeagueRecorder.Shared.Abstractions.Replays
 
         public GameInformation GameInformation { get; set; }
         public ReplayInformation ReplayInformation { get; set; }
+
+        public IList<ReplayGameParticipant> Participants { get; set; }
     }
 }
