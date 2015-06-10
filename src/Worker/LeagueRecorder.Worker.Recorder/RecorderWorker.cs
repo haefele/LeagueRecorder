@@ -83,6 +83,8 @@ namespace LeagueRecorder.Worker.Recorder
                         recorder.Dispose();
                     }
                 }
+
+                await Task.Delay(TimeSpan.FromSeconds(5));
             }
 
             foreach (var runningRecording in this._gameRecorders.Keys)
