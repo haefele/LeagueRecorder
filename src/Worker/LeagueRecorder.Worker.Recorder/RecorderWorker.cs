@@ -62,6 +62,8 @@ namespace LeagueRecorder.Worker.Recorder
                 if (recording.IsError)
                 {
                     LogTo.Error("Error while reading from the queue: {0}", recording.Message);
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
                 else
                 {
@@ -83,8 +85,6 @@ namespace LeagueRecorder.Worker.Recorder
                         recorder.Dispose();
                     }
                 }
-
-                await Task.Delay(TimeSpan.FromSeconds(5));
             }
 
             foreach (var runningRecording in this._gameRecorders.Keys)
