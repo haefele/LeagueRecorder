@@ -41,10 +41,8 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             return Result.CreateAsync(async () =>
             {
                 var queue = await this.GetQueueAsync();
-
-                var settings = this.GetJsonSerializerSettings();
-
-                var message = new CloudQueueMessage(JsonConvert.SerializeObject(recording, this.GetJsonSerializerSettings()));
+                
+                var message = new CloudQueueMessage(JsonConvert.SerializeObject(recording, LeagueJsonSerializerSettings.Get()));
                 await queue.AddMessageAsync(message);
             });
         }
@@ -60,7 +58,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 if (message == null)
                     throw new ResultException(Messages.NoRecordingRequest);
 
-                var actualData = JsonConvert.DeserializeObject<RecordingRequest>(message.AsString, this.GetJsonSerializerSettings());
+                var actualData = JsonConvert.DeserializeObject<RecordingRequest>(message.AsString, LeagueJsonSerializerSettings.Get());
                 this._requestToQueueMessageMapping.TryAdd(actualData, message);
 
                 return actualData;
@@ -88,14 +86,6 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
             await queue.CreateIfNotExistsAsync();
 
             return queue;
-        }
-
-        private JsonSerializerSettings GetJsonSerializerSettings()
-        {
-            return new JsonSerializerSettings
-            {
-                Converters = new JsonConverter[] { new RegionJsonConverter() }
-            };
         }
         #endregion
     }

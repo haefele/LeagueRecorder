@@ -81,6 +81,7 @@
     <Compile Include="Summoners\ISummonerStorage.cs" />
     <Compile Include="Summoners\Summoner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Team.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

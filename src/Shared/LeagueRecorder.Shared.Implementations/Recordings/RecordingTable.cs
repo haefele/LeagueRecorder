@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using LeagueRecorder.Shared.Abstractions;
 using LeagueRecorder.Shared.Abstractions.Recordings;
+using LeagueRecorder.Shared.Implementations.Extensions;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 
@@ -79,7 +80,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 ClientAddedLag = recording.ClientAddedLag.HasValue ? recording.ClientAddedLag.Value.Ticks : (long?)null,
                 DelayTime = recording.DelayTime.HasValue ? recording.DelayTime.Value.Ticks : (long?)null,
                 InterestScore = recording.InterestScore,
-                ParticipantsJson = JsonConvert.SerializeObject(recording.Participants)
+                ParticipantsJson = JsonConvert.SerializeObject(recording.Participants, LeagueJsonSerializerSettings.Get())
             };
         }
 
@@ -108,7 +109,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 ClientAddedLag = this.ClientAddedLag.HasValue ? TimeSpan.FromTicks(this.ClientAddedLag.Value) : (TimeSpan?)null,
                 DelayTime = this.DelayTime.HasValue ? TimeSpan.FromTicks(this.DelayTime.Value) : (TimeSpan?)null,
                 InterestScore = this.InterestScore,
-                Participants = JsonConvert.DeserializeObject<IList<RecordingGameParticipant>>(this.ParticipantsJson)
+                Participants = JsonConvert.DeserializeObject<IList<RecordingGameParticipant>>(this.ParticipantsJson, LeagueJsonSerializerSettings.Get())
             };
         }
     }

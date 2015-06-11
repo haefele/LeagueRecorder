@@ -120,7 +120,9 @@ namespace LeagueRecorder.Shared.Implementations.League
                             .Select(f => new RiotGameParticipant
                                 {
                                     ChampionId = f.Value<long>("championId"),
-                                    SummonerId = f.Value<long>("summonerId")
+                                    SummonerId = f.Value<long>("summonerId"),
+                                    SummonerName = f.Value<string>("summonerName"),
+                                    Team = Team.FromTeamId(f.Value<long>("teamId"))
                                 })
                             .ToList()
                     };

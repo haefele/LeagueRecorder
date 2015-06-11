@@ -6,12 +6,14 @@ namespace LeagueRecorder.Shared.Implementations.Replays
     {
         public ReplayGameParticipantEntityMaps()
         {
-            Table("ReplayGameParticipant");
+            Table("ReplayGameParticipants");
 
             Id(f => f.Id).GeneratedBy.Guid();
 
             Map(f => f.SummonerId).Not.Nullable();
+            Map(f => f.SummonerName).Not.Nullable();
             Map(f => f.ChampionId).Not.Nullable();
+            Map(f => f.TeamId).Not.Nullable();
         }
     }
 }

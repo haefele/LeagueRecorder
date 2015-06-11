@@ -70,7 +70,7 @@ namespace LeagueRecorder.Shared.Implementations.Replays
                     ClientAddedLag = this.ClientAddedLag,
                     DelayTime = this.DelayTime
                 },
-                Participants = this.Participants.Select(f => new ReplayGameParticipant { SummonerId = f.SummonerId, ChampionId = f.ChampionId}).ToList()
+                Participants = this.Participants.Select(f => new ReplayGameParticipant { SummonerId = f.SummonerId, SummonerName = f.SummonerName, ChampionId = f.ChampionId, Team = Team.FromTeamId(f.TeamId)}).ToList()
             };
         }
 
@@ -97,7 +97,7 @@ namespace LeagueRecorder.Shared.Implementations.Replays
                 KeyFrameTimeInterval = replay.ReplayInformation.KeyFrameTimeInterval,
                 ClientAddedLag = replay.ReplayInformation.ClientAddedLag,
                 DelayTime = replay.ReplayInformation.DelayTime,
-                Participants = replay.Participants.Select(f => new ReplayGameParticipantEntity { SummonerId = f.SummonerId, ChampionId = f.ChampionId}).ToList()
+                Participants = replay.Participants.Select(f => new ReplayGameParticipantEntity { SummonerId = f.SummonerId, SummonerName = f.SummonerName, ChampionId = f.ChampionId, TeamId = f.Team.TeamId }).ToList()
             };
         }
     }

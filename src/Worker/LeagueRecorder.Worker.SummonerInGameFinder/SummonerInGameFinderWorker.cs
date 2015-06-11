@@ -105,7 +105,9 @@ namespace LeagueRecorder.Worker.SummonerInGameFinder
                     .Select(f => new RecordingGameParticipant
                         {
                             ChampionId = f.ChampionId, 
-                            SummonerId = f.SummonerId
+                            SummonerId = f.SummonerId,
+                            SummonerName = f.SummonerName,
+                            Team = f.Team
                         })
                     .ToList()
             };

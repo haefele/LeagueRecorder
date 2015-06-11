@@ -348,7 +348,7 @@ namespace LeagueRecorder.Worker.Recorder
                     KeyFrameTimeInterval = recording.KeyFrameTimeInterval.Value,
                     StartGameChunkId = recording.StartGameChunkId.Value
                 },
-                Participants = recording.Participants.Select(f => new ReplayGameParticipant { ChampionId = f.ChampionId, SummonerId = f.SummonerId}).ToList()
+                Participants = recording.Participants.Select(f => new ReplayGameParticipant { ChampionId = f.ChampionId, SummonerName = f.SummonerName, SummonerId = f.SummonerId, Team = f.Team}).ToList()
             };
 
             var saveResult = await this._replayStorage.SaveReplayAsync(record);

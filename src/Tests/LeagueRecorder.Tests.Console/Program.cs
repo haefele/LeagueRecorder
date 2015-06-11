@@ -50,56 +50,7 @@ namespace LeagueRecorder.Tests.Console
             var recordingStorage = new RecordingStorage(cloudStorageAccount.CreateCloudTableClient(), config);
             var gameDataStorage = new GameDataStorage(cloudStorageAccount.CreateCloudBlobClient(), config);
 
-            var saveResult = recordStorage.SaveReplayAsync(new Replay
-            {
-                GameId = 123123123,
-                Region = Region.EuropeWest,
-                GameInformation = new GameInformation
-                {
-                    EndTime = DateTime.Now.AddMinutes(10),
-                    GameLength = TimeSpan.FromMinutes(10),
-                    InterestScore = 1000,
-                    StartTime = DateTime.Now,
-                },
-                LeagueVersion = new Version(5, 9, 1),
-                SpectatorVersion = new Version(1, 82, 89),
-                ReplayInformation = new ReplayInformation
-                {
-                    ChunkTimeInterval = TimeSpan.FromSeconds(30),
-                    ClientAddedLag = TimeSpan.FromSeconds(30),
-                    CreateTime = DateTime.Now.AddSeconds(-10),
-                    DelayTime = TimeSpan.FromSeconds(30),
-                    EncryptionKey = "123123123",
-                    EndGameChunkId = 12,
-                    EndGameKeyFrameId = 6,
-                    EndStartupChunkId = 2,
-                    KeyFrameTimeInterval = TimeSpan.FromSeconds(60),
-                    StartGameChunkId = 3
-                },
-                Participants = new []
-                {
-                    new ReplayGameParticipant
-                    {
-                        ChampionId = 1,
-                        SummonerId = 1
-                    },
-                    new ReplayGameParticipant
-                    {
-                        ChampionId = 2,
-                        SummonerId = 2
-                    },
-                    new ReplayGameParticipant
-                    {
-                        ChampionId = 3,
-                        SummonerId = 3
-                    },
-                    new ReplayGameParticipant
-                    {
-                        ChampionId = 4,
-                        SummonerId = 4
-                    },
-                }
-            }).Result;
+            var version = apiClient.GetLeagueVersion(Region.EuropeWest).Result;
         }
     }
 
