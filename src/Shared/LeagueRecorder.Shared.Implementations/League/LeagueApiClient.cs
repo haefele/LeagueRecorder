@@ -42,14 +42,14 @@ namespace LeagueRecorder.Shared.Implementations.League
             return Result.CreateAsync(async () =>
             {
                 HttpResponseMessage response = await this.GetClient()
-                    .GetAsync(string.Format("api/lol/static-data/{0}/v1.2/realm", region.RiotApiPlatformId));
+                    .GetAsync(string.Format("api/lol/static-data/{0}/v1.2/versions", region.RiotApiPlatformId));
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
-                    var responseJson = JObject.Parse(responseString);
+                    var responseJson = JArray.Parse(responseString);
 
-                    return Version.Parse(responseJson.Value<string>("v"));
+                    return responseJson.Values().Select(f => Version.Parse(f.Value<string>())).Max();
                 }
                 else
                 {
