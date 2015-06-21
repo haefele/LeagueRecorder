@@ -65,7 +65,7 @@ namespace LeagueRecorder.Worker.Recorder
 
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }
-                else
+                else if (recording.Data != null)
                 {
                     var gameRecorder = new GameRecorder(recording.Data, this._leagueApiClient, this._spectatorApiClient, this._recordingStorage, this._gameDataStorage, this._replayStorage, this._config);
                     this._gameRecorders.TryAdd(gameRecorder, null);

@@ -56,7 +56,7 @@ namespace LeagueRecorder.Shared.Implementations.Recordings
                 var message = await queue.GetMessageAsync();
 
                 if (message == null)
-                    throw new ResultException(Messages.NoRecordingRequest);
+                    return null;
 
                 var actualData = JsonConvert.DeserializeObject<RecordingRequest>(message.AsString, LeagueJsonSerializerSettings.Get());
                 this._requestToQueueMessageMapping.TryAdd(actualData, message);
