@@ -131,7 +131,7 @@ namespace LeagueRecorder.Shared.Implementations.League
                 }
                 else if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    throw new ResultException(Messages.SummonerNotInGame);
+                    return null;
                 }
                 else if (response.StatusCode == (HttpStatusCode)429)
                 {

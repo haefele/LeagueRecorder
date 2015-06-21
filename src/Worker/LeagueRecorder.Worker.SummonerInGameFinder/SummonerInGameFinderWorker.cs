@@ -89,6 +89,9 @@ namespace LeagueRecorder.Worker.SummonerInGameFinder
                 return;
             }
 
+            if (currentGameResult.Data == null)
+                return;
+
             var isGameRecordingResult = await this._recordingStorage.IsGameRecording(currentGameResult.Data.GameId, summoner.Region);
             if (isGameRecordingResult.IsSuccess)
             {
