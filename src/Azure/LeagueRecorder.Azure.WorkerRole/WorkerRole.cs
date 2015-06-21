@@ -15,6 +15,7 @@ using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.Storage;
+using NLog;
 
 namespace LeagueRecorder.Azure.WorkerRole
 {
@@ -52,6 +53,8 @@ namespace LeagueRecorder.Azure.WorkerRole
             catch (Exception exception)
             {
                 LogTo.ErrorException("Exception while starting the cloud service.", exception);
+                LogManager.Flush();
+
                 throw;
             }
         }
@@ -65,6 +68,8 @@ namespace LeagueRecorder.Azure.WorkerRole
             catch (Exception exception)
             {
                 LogTo.ErrorException("Exception while stopping the cloud service.", exception);
+                LogManager.Flush();
+
                 throw;
             }
         }
@@ -81,6 +86,8 @@ namespace LeagueRecorder.Azure.WorkerRole
             catch (Exception exception)
             {
                 LogTo.ErrorException("Exception while running the cloud service.", exception);
+                LogManager.Flush();
+
                 throw;
             }
         }
