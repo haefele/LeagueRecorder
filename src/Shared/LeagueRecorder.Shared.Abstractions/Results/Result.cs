@@ -100,8 +100,6 @@ namespace LeagueRecorder.Shared.Abstractions.Results
         [DebuggerStepThrough]
         public static Result<T> AsSuccess<T>(T data)
         {
-            Guard.AgainstNullArgumentIfNullable("data", data);
-
             return new Result<T>
             {
                 State = ResultState.Success,
